@@ -1,0 +1,604 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HM BTN Calendar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+
+        var dateNumber = 2;
+        var currentSeason = "Spring";
+        var currentYear = 1;
+        var dayOfWeek = 'Monday';
+        var totalDays = 2;
+        var dateString = dayOfWeek + ", " + currentSeason + " " + dateNumber + ", Year " + currentYear;
+        var daysInMonth = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
+        var yearsForDropdown = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+        var trackedNPCs = [];
+        var npcList = ["Ann", "Elli", "Karen", "Maria", "Popuri"].sort();
+        var npcInfo = getNPCS();
+        var festivalInfo = getFestivals();
+
+        function onLoad() {
+            // Creating NPC Dropdown         
+            for (var i = 0; i < npcList.length; i++) {
+                $("#dropdownList").append("<li id='"+npcList[i]+"Dropdown'><a class='dropdown-item'><img src='"+getImage(npcList[i])+"' class='img-fluid' style='width:20px; height:20px'>"+npcList[i]+"</a></li>")
+            }
+
+            // Click Event for NPC Dropdown
+            $("#dropdownList li").click(function() {
+                var npcClicked = $(this).attr("id");
+                npcClicked = npcClicked.replace("Dropdown","");
+
+                addNPCToList(npcClicked, true);
+            });
+
+            // Click Event for Season Dropdown
+            $("#seasonDropdownList li").click(function() {
+                var seasonClicked = $(this).attr("id");
+                seasonClicked = seasonClicked.replace("Dropdown","");
+                document.getElementById("seasonDropdownMenuButton").innerHTML = seasonClicked;
+                checkIfGoToDateEnabled();
+            });
+
+            // Creating Day Dropdown
+            for (var i = 0; i < daysInMonth.length; i++) {
+                $("#dayDropdownList").append("<li id='"+daysInMonth[i]+"Dropdown'><a class='dropdown-item'>"+daysInMonth[i]+"</a></li>");
+            }
+
+            // Click Event for Day Dropdown
+            $("#dayDropdownList li").click(function() {
+                var dayClicked = $(this).attr("id");
+                dayClicked = dayClicked.replace("Dropdown","");
+                document.getElementById("dayDropdownMenuButton").innerHTML = dayClicked;
+                checkIfGoToDateEnabled();
+            });
+
+            // Creating Year Dropdown
+            for (var i = 0; i < yearsForDropdown.length; i++) {
+                $("#yearDropdownList").append("<li id='"+yearsForDropdown[i]+"YearDropdown'><a class='dropdown-item'>Year "+yearsForDropdown[i]+"</a></li>");
+            }
+
+            // Click Event for Year Dropdown
+            $("#yearDropdownList li").click(function() {
+                var yearClicked = $(this).attr("id");
+                yearClicked = yearClicked.replace("YearDropdown","");
+                document.getElementById("yearDropdownMenuButton").innerHTML = "Year " + yearClicked;
+                checkIfGoToDateEnabled();
+            });
+
+            // Click Event for Go Button
+            $("#goToDateButton").click(function() {
+                    var selectedSeason = document.getElementById("seasonDropdownMenuButton").innerHTML;
+                    var selectedDay = document.getElementById("dayDropdownMenuButton").innerHTML;
+                    var selectedYear = document.getElementById("yearDropdownMenuButton").innerHTML;
+                    selectedYear = selectedYear.replace("Year ", "");
+                    goToDate(selectedDay, selectedSeason, selectedYear);
+            });
+
+            updateDateText();
+        }
+
+        function checkIfGoToDateEnabled() {
+            var yearDropdownText = "";
+            var dayDropdownText = ""
+            var seasonDropdownText = ""
+            yearDropdownText = $("#yearDropdownMenuButton").text();
+            dayDropdownText = $("#dayDropdownMenuButton").text();
+            seasonDropdownText = $("#seasonDropdownMenuButton").text();
+
+            // Enables Go To Date Button if all parts of date are selected
+            if (/\d/.test(yearDropdownText) && 
+                !dayDropdownText.includes("Day") &&
+                !seasonDropdownText.includes("Season")) {
+                $("#goToDateButton").removeAttr('disabled');
+            }
+        }
+
+        function addDay() {
+            totalDays++;
+            dateNumber++;
+            if (dateNumber > 30) {
+                dateNumber = 1;
+                this.advanceSeason();
+            }
+            this.setDayOfWeek();
+
+            this.updateDateText();
+            this.updateScheduleText();
+            this.updateFestivalText();
+        }
+
+        function removeDay() {
+            totalDays--;
+            dateNumber--;
+            if (dateNumber < 1) {
+                dateNumber = 30;
+                this.backSeason();
+            }
+            this.setDayOfWeek();
+
+            this.updateDateText();
+            this.updateScheduleText();
+            this.updateFestivalText();
+        }
+
+        function updateScheduleText() {
+            $("#npcScheduleList li").remove();
+            for (var i = 0; i < trackedNPCs.length; i++) {
+                var npcScheduleText = getSchedule(trackedNPCs[i]);
+                addNPCToList(trackedNPCs[i], false);
+            }
+        }
+
+        function updateDateText() {
+            this.dateString = this.dayOfWeek + ", " + this.currentSeason + " " + this.dateNumber + ", Year " + this.currentYear;
+            document.getElementById("dateDisplay").innerHTML = dateString;
+        }
+
+        function goToDate(dayInput, seasonInput, yearInput) {;
+            var seasonDaysToAdd;
+            var yearDaysToAdd = 0;
+
+            switch (seasonInput) {
+                case "Spring":
+                    seasonDaysToAdd = 0;
+                    break;
+                case "Summer":
+                    seasonDaysToAdd = 30;
+                    break;
+                case "Fall":
+                    seasonDaysToAdd = 60;
+                    break;
+                case "Winter":
+                    seasonDaysToAdd = 90;
+                    break;
+            }
+
+            for (var i = 0; i < yearInput-1; i++) {
+                yearDaysToAdd = yearDaysToAdd + 120;
+            }
+
+            this.totalDays = +dayInput + +seasonDaysToAdd + +yearDaysToAdd;
+            this.currentYear = yearInput;
+            this.currentSeason = seasonInput;
+            this.dateNumber = dayInput;
+
+            this.setDayOfWeek()
+            this.updateDateText();
+            this.updateScheduleText();
+            this.updateFestivalText();
+        }
+
+        //TODO: Bug: Schedule Text not crossed out when adding NPC to list during festival day where shops are closed and npcs unavailable
+        function updateFestivalText() {
+            $("#festivalAlert").remove();
+            $("#festivalAlert").remove(); // Called twice because of Fall 27 Year 1 Instance multiple alerts. TODO:Fall 27 Year 1 Bug
+            $("#npcScheduleList li").css("text-decoration","none");
+
+            for (const key in festivalInfo) {
+                var festival = festivalInfo[key]
+                if ((festival.season == this.currentSeason) && (festival.day == this.dateNumber)) {
+                    var festivalString =  key + ": " + festival.text
+                
+                    if (festival.hasOwnProperty("year")) {
+                        if (festival.year == this.currentYear) { //Happens on specific year
+                            $("#festivalAlertBox").append('<div id="festivalAlert" class="alert" role="alert"><h4>'+festivalString+'</h4></div>');
+                            $("#festivalAlert").addClass(festival.color);
+                            if (festival.hasOwnProperty("shopsClosed")) { //Crosses out text for npc schedules if shops are closed for festival
+                                $("#npcScheduleList li").css("text-decoration","line-through");
+                            }
+                        }
+                    } else { //Happens yearly
+                        $("#festivalAlertBox").append('<div id="festivalAlert" class="alert" role="alert"><h4>'+festivalString+'</h4></div>');
+                        $("#festivalAlert").addClass(festival.color);
+                        if (festival.hasOwnProperty("shopsClosed")) {
+                            $("#npcScheduleList li").css("text-decoration","line-through");
+                        }
+                    }
+                }
+            }
+        }
+
+        function advanceSeason() {
+            switch (this.currentSeason) {
+            case ('Spring'):
+                this.currentSeason = 'Summer';
+                break;
+            case ('Summer'):
+                this.currentSeason = 'Fall';
+                break;
+            case ('Fall'):
+                this.currentSeason = 'Winter';
+                break;
+            case ('Winter'):
+                this.currentSeason = 'Spring';
+                this.currentYear++; // Need to increase the year at the end of winter
+                break;
+            }
+        }
+
+        function backSeason() {
+            switch (this.currentSeason) {
+            case ('Spring'):
+                this.currentSeason = 'Winter';
+                this.currentYear--;
+                break;
+            case ('Summer'):
+                this.currentSeason = 'Spring';
+                break;
+            case ('Fall'):
+                this.currentSeason = 'Summer';
+                break;
+            case ('Winter'):
+                this.currentSeason = 'Fall';
+                break;
+            }
+        }
+
+        // Sets the day of the week based off of total days played
+        function setDayOfWeek() {
+            let day = this.totalDays % 7;
+                switch (day) {
+                    case (0):
+                        this.dayOfWeek = 'Saturday';
+                        break;
+                    case (1):
+                        this.dayOfWeek = 'Sunday';
+                        break;
+                    case (2):
+                        this.dayOfWeek = 'Monday';
+                        break;
+                    case (3):
+                        this.dayOfWeek = 'Tuesday';
+                        break;
+                    case (4):
+                        this.dayOfWeek = 'Wednesday';
+                        break;
+                    case (5):
+                        this.dayOfWeek = 'Thursday';
+                        break;
+                    case (6):
+                        this.dayOfWeek = 'Friday';
+                        break;
+                }
+        }
+
+        //Returns text of single schedule block for an npc. Checks for specific seasonal or day requirements.
+        function getSchedule(name) {
+
+            var npcData = npcInfo[name];
+            var scheduleString = "Unavailable";
+
+            for(var i = 0; i < npcData.schedule_blocks.length; i++) {
+                if(npcData.schedule_blocks[i].weekDays.includes(dayOfWeek)) {
+                    if(npcData.schedule_blocks[i].hasOwnProperty("seasons")) {
+                        if(npcData.schedule_blocks[i].seasons.includes(currentSeason)) {
+                            if(npcData.schedule_blocks[i].hasOwnProperty("days")){
+                                if(npcData.schedule_blocks[i].days.includes(dateNumber)) {
+                                    scheduleString = npcData.schedule_blocks[i].text; //Seasonal and specific day of month. Eg Maria 1-10 Summer and Winter
+                                }
+                            }
+                            else {
+                                scheduleString = npcData.schedule_blocks[i].text; //Seasonal
+                            }
+                        }
+                    } else {
+                        scheduleString = npcData.schedule_blocks[i].text; //No seasonal requirements
+                    }
+                }
+            }
+
+            return scheduleString;
+        }
+        
+        function getImage(name) {
+            var npcData = npcInfo[name];
+            return npcData.img;
+
+        }
+
+        function addNPCToList(npcName, pushToTrackedNPCs) {
+            if(trackedNPCs.includes(npcName) && pushToTrackedNPCs) return false;
+
+            $("#npcScheduleList").append('<li class="list-group-item d-flex justify-content-between align-items-center" id="'+npcName+'ScheduleItem"><img src="'+getImage(npcName)+'"class="img-fluid" style="width:35px; height:35px"><span style="width:100%; text-align:left; margin-left:15px; font-size:1em">'+npcName+': '+ getSchedule(npcName) +'</span><span type="button" class="badge bg-danger" onclick="removeNPC(\''+ npcName + '\')">-</span></li>');
+            if(pushToTrackedNPCs) {
+                trackedNPCs.push(npcName);
+            }
+            var dropdownString = "#" + npcName + "Dropdown"
+            $(dropdownString + " a").addClass("disabled");
+        }
+
+        function removeNPC(npcName) {
+            trackedNPCs = trackedNPCs.filter(i => i !== npcName);
+            $('#'+npcName+'ScheduleItem').remove()
+
+            var dropdownString = "#" + npcName + "Dropdown"
+            $(dropdownString + " a").removeClass("disabled");
+        }
+
+        //Start NPC Data
+        function getNPCS() {
+            return {
+                "Ann" : {
+                    "schedule_blocks" : [
+                        {
+                            "weekDays" : "Sunday",
+                            "text" : "8am - 5pm 50% Goddess Pond, 50% Green Ranch. <br> Rain: Green Ranch Barn near back"
+                        },
+                        {
+                            "weekDays" : "Monday, Tuesday, Wednesday, Friday, Saturday",
+                            "text" : "8am - 5pm Green Ranch / work. <br> Rain: 8am-5pm Green Ranch Barn"
+                        },
+                        {
+                            "weekDays" : "Thursday",
+                            "text" : "9am - 5pm 25% Fisherman Tent, 25% Carpenter House, 25% Vineyard, 25% 10am-5pm Tool Shop. <br> Rain: Unavailable"
+                        }
+                    ],
+                    "img" : 'assets/Ann.png'
+                },
+                "Elli" : {
+                    "schedule_blocks" : [
+                        {
+                            "weekDays" : "Wednesday",
+                            "text" : "9am - 12pm Flower Shop, 12:00pm - 5pm Outside Bakery. <br> Rain: 9am - 12pm Flower Shop, 12:00pm - 5pm Bakery"
+                        },
+                        {
+                            "weekDays" : "Tuesday, Thursday, Friday, Saturday",
+                            "text" : "9am - 5pm Bakery"
+                        },
+                        {
+                            "weekDays" : "Monday",
+                            "seasons" : "Spring, Fall Winter",
+                            "text" : "8am - 5pm Carpenter House, Fisherman Tent. <br> Rain: Unavailable"
+                        },
+                        {
+                            "weekDays" : "Monday",
+                            "seasons" : "Summer",
+                            "text" : "8am - 5pm Beach Dock. <br> Rain: Unavailable"
+                        },
+                        {
+                            "weekDays" : "Sunday",
+                            "text" : "Unavailable"
+                        }
+                    ],
+                    "img" : 'assets/Elli.png'
+                },
+                "Karen" : {
+                    "schedule_blocks" : [
+                        {
+                            "weekDays" : "Monday, Thursday",
+                            "text" : "9am - 5pm Vineyard, 6pm - 12am Bar. <br> Rain: Unavailable"
+                        },
+                        {
+                            "weekDays" : "Sunday",
+                            "text" : "10am - 6pm Beach. <br> Rain: Unavailable"
+                        },
+                        {
+                            "weekDays" : "Friday, Saturday",
+                            "text" : "10am - 5pm 25% Carpenter House, 25% Beach Dock, 50% Unavailable, <br> 6pm - 12am Bar. <br> Rain: Unavailable"
+                        },
+                        {
+                            "weekDays" : "Wednesday",
+                            "text" : "10am - 5pm 25% Carpenter House, 25% Beach Dock, 50% Unavailable. <br> Rain: Unavailable"
+                        }
+                    ],
+                    "img" : 'assets/Karen.png'
+                },
+                "Maria" : {
+                    "schedule_blocks" : [
+                        {
+                            "weekDays" : "Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text" : "9am - 5pm Library"
+                        },
+                        {
+                            "weekDays" : "Monday",
+                            "text" : "50% 8am - 3pm Outside Church, 50% 10am - 5pm Fisherman. <br> Rain: 9am-5pm Home"
+                        },
+                        {
+                            "weekDays" : "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "seasons" : "Summer",
+                            "days" : "1, 2, 3, 4, 5, 6, 7, 8, 9, 10",
+                            "text" : "9am - 5pm 50% Outside Church, %50 Fisherman Tent"
+                        },
+                        {
+                            "weekDays" : "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "seasons" : "Winter",
+                            "days" : "1, 2, 3, 4, 5, 6, 7, 8, 9, 10",
+                            "text" : "9am - 5pm 50% Home, 50% Church Organ"
+                        }
+                    ],
+                    "img" : 'assets/Maria.png'
+                },
+                "Popuri" : {
+                    "schedule_blocks" : [
+                        {
+                            "weekDays" : "Monday, Tuesday, Wednesday, Thursday",
+                            "text" : "9am - 5pm Outside Flower Shop. <br> Rain: In Flower Shop"
+                        },
+                        {
+                            "weekDays" : "Friday",
+                            "text" : "9am - 5pm Carpenter House, Mountain Summit. <br> Rain: In Flower Shop"
+                        },
+                        {
+                            "weekDays" : "Saturday",
+                            "text" : "9am - 5pm Carpenter House, Mountain Summit. <br> Rain: In Flower Shop"
+                        },
+                        {
+                            "weekDays" : "Sunday",
+                            "text" : "9am - 5pm 50% Bakery, 50% Green Ranch. <br> Rain: Bakery"
+                        }
+                    ],
+                    "img" : 'assets/Popuri.png'
+                }
+            }
+        } 
+        //End NPC Data
+        //TODO: Add shops in as NPCS.
+
+        //Start Festival Data
+        function getFestivals()  {
+            return {
+                "Spring Years Day" : {
+                    "season" : "Spring",
+                    "day" : "1",
+                    "text" : "Town Square before 6pm. Shops Closed.",
+                    "shopsClosed": "true",
+                    "color" : "alert-danger"
+                },
+                "Planting Festival" : {
+                    "season" : "Spring",
+                    "day" : "8",
+                    "text" : "Town Square before 6pm. Shops Closed.",
+                    "shopsClosed": "true",
+                    "color" : "alert-danger"
+                },
+                "Spring Horse Race Tomorrow" : {
+                    "season" : "Spring",
+                    "day" : "16",
+                    "text" : "Doug at your farm.",
+                    "color" : "alert-warning"
+                },
+                "Spring Horse Race" : {
+                    "season" : "Spring",
+                    "day" : "17",
+                    "text" : "8am Town Square. Shops Closed.",
+                    "shopsClosed": "true",
+                    "color" : "alert-danger"
+                },
+                "Flower Festival Voting Day 1" : {
+                    "season" : "Spring",
+                    "day" : "19",
+                    "text" : "You may vote for the next Harvest Goddess at Town Square.",
+                    "color" : "alert-warning"
+                },
+                "Flower Festival Voting Day 2" : {
+                    "season" : "Spring",
+                    "day" : "20",
+                    "text" : "You may vote for the next Harvest Goddess at Town Square.",
+                    "color" : "alert-warning"
+                },
+                "Flower Festival Voting Day 3" : {
+                    "season" : "Spring",
+                    "day" : "21",
+                    "text" : "You may vote for the next Harvest Goddess at Town Square.",
+                    "color" : "alert-warning"
+                },
+                "Flower Festival Voting Last Day" : {
+                    "season" : "Spring",
+                    "day" : "22",
+                    "text" : "You may vote for the next Harvest Goddess at Town Square.",
+                    "color" : "alert-warning"
+                },
+                "Flower Festival" : {
+                    "season" : "Spring",
+                    "day" : "23",
+                    "text" : "Town Square before 6pm. Shops Closed.",
+                    "shopsClosed": "true",
+                    "color" : "alert-danger"
+                    
+                },
+                "Fireworks Festival" : {
+                    "season" : "Summer",
+                    "day" : "1",
+                    "text" : "7pm. Beach, Green Ranch, Mountain, Bakery, or Town Square. Shops Open.",
+                    "color" : "alert-danger"
+                }
+            }
+        }
+        //End Festival Data    
+    </script>
+    </head>
+
+  <body onload="onLoad()">
+    <nav class="navbar fixed-top navbar-light bg-light">
+        <div class="container-fluid">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col dropdown">
+                        <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        + Add NPC
+                        </button>
+                        <ul id="dropdownList" class="dropdown-menu" style=" overflow-y:scroll; max-height: 50vh;" aria-labelledby="dropdownMenuButton1">
+                            <!-- Dropdown generated in onLoad() -->
+                        </ul>
+                    </div>
+                    <div class="col text-center">
+                        <h6>Harvest Moon: <br> Back To Nature </h6>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col dropdown">
+                        <button class="btn dropdown-toggle" type="button" id="seasonDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 3px;">
+                            Season
+                        </button>
+                        <ul id="seasonDropdownList" class="dropdown-menu" style=" overflow-y:scroll; max-height: 50vh;" aria-labelledby="seasonDropdownMenuButton">
+                            <li id="SpringDropdown"><a class="dropdown-item" >Spring</a></li>
+                            <li id="SummerDropdown"><a class="dropdown-item" >Summer</a></li>
+                            <li id="FallDropdown"><a class="dropdown-item" >Fall</a></li>
+                            <li id="WinterDropdown"><a class="dropdown-item" >Winter</a></li>
+                        </ul>
+                    </div>
+                    <div class="col dropdown">
+                        <button class="btn dropdown-toggle" type="button" id="dayDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 3px;">
+                        Day
+                        </button>
+                        <ul id="dayDropdownList" class="dropdown-menu" style=" overflow-y:scroll; max-height: 50vh;" aria-labelledby="dayDropdownMenuButton">
+                            <!-- Dropdown generated in onLoad() -->
+                        </ul>
+                    </div>
+                    <div class="col dropdown">
+                        <button class="btn dropdown-toggle" type="button" id="yearDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 3px;">
+                        Year
+                        </button>
+                        <ul id="yearDropdownList" class="dropdown-menu" style=" overflow-y:scroll; max-height: 50vh;" aria-labelledby="yearMenuButton">
+                            <!-- Dropdown generated in onLoad() -->
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-primary" id="goToDateButton" disabled>Go</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </nav>
+
+    <br>
+
+    <div class="container"style="margin-top:100px">
+        <div id="festivalAlertBox">
+            <!-- Festivals generated in updateFestivalText() -->
+        </div>
+    </div>
+
+    <div class="container" style=" margin-bottom: 160px;">
+        <ul id="npcScheduleList" class="list-group">
+              <!-- List items generated in addNPCToList() -->
+        </ul>
+    </div>
+
+    <nav class="navbar fixed-bottom navbar-light bg-light">
+        <div class="container-fluid" style="justify-content: center;">
+            <div class="container">
+                <h1 id="dateDisplay" style="text-align:center; white-space:nowrap; font-size:1.5em"></h1>
+            </div>
+            <div class="row" style="width:100%">
+                <div class="col">
+                    <button onclick="removeDay()" type="button" class="btn btn-dark btn-lg" style="width:100%; height:80px">< Previous</button>
+                </div>
+                <div class="col">
+                    <button onclick="addDay()" type="button" class="btn btn-dark btn-lg" style="width:100%; height:80px">Next ></button>
+                </div>
+            </div>
+        </div>
+      </nav>
+  </body>
+</html>
+
