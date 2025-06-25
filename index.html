@@ -21,8 +21,13 @@
         var yearsForDropdown = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
         var trackedNPCs = [];
-        var npcList = ["Ann", "Elli", "Mary"].sort();
+        var npcList = ["Ann","Anna","Aqua (Light Blue)","Barley","Basil","Bold (Purple)","Chef (Red)","Cliff","Doctor Tim","Doug","Duke","Ellen","Elli","Gotz","Gray","Greg","Harris","Hoggy (Yellow)","Jeff","Kai","Kano","Karen","Lillia","Louis","Manna","Mary","May","Mayor Thomas","Nappy (Orange)","Pastor Carter","Popuri","Rick","Saibara","Staid (Blue)","Stu","Timid (Green)","Won","Zack"].sort();
         var npcInfo = getNPCS();
+
+        var trackedShops = [];
+        var shopList = ["Saibara Blacksmith", "Aja Winery", "Library", "Chicken Lil", "Yodel Ranch", "Gotz House", "Supermarket", "Clinic", "Seaside Lodge", "Inn", "Won Seed Corner", "Church", "Harvest Sprites"].sort();
+        var shopInfo = getShops();
+
         var festivalInfo = getFestivalsAndBirthdays();
 
         function onLoad() {
@@ -35,8 +40,18 @@
             $("#dropdownList li").click(function() {
                 var npcClicked = $(this).attr("id");
                 npcClicked = npcClicked.replace("Dropdown","");
-
                 addNPCToList(npcClicked, true);
+            });
+
+            // Creating Shop Dropdown
+            for (var i = 0; i < shopList.length; i++) {
+                $("#shopDropdownList").append("<li id='"+shopList[i]+"ShopDropdown'><a class='dropdown-item'>"+shopList[i]+"</a></li>");
+            }
+            // Click Event for Shop Dropdown
+            $("#shopDropdownList li").click(function() {
+                var shopClicked = $(this).attr("id");
+                shopClicked = shopClicked.replace("ShopDropdown","");
+                addShopToList(shopClicked, true);
             });
 
             // Click Event for Season Dropdown
@@ -132,9 +147,13 @@
 
         function updateScheduleText() {
             $("#npcScheduleList li").remove();
+            $("#shopScheduleList li").remove();
             for (var i = 0; i < trackedNPCs.length; i++) {
                 var npcScheduleText = getSchedule(trackedNPCs[i]);
                 addNPCToList(trackedNPCs[i], false);
+            }
+            for (var i = 0; i < trackedShops.length; i++) {
+                addShopToList(trackedShops[i], false);
             }
         }
 
@@ -179,28 +198,40 @@
 
         //TODO: Bug: Schedule Text not crossed out when adding NPC to list during festival day where shops are closed and npcs unavailable
         function updateFestivalText() {
-            $("#festivalAlert").remove();
-            $("#festivalAlert").remove(); // Called twice in case of multiple alerts. TODO: Figure out a different way to handle this. Will need to call more if more than 2 festivals/birthdays on the same day.
+            $(".festivalAlert").remove(); // Remove all previous alerts
             $("#npcScheduleList li").css("text-decoration","none");
+            $("#shopScheduleList li").css("text-decoration","none"); // <-- Add this line for shop schedule
 
             for (const key in festivalInfo) {
                 var festival = festivalInfo[key]
                 if ((festival.season == this.currentSeason) && (festival.day == this.dateNumber)) {
-                    var festivalString =  key + festival.text
-                
+                    var festivalTitle = key;
+                    var festivalBody = festival.text || "";
+
                     if (festival.hasOwnProperty("year")) {
                         if (festival.year == this.currentYear) { //Happens on specific year
-                            $("#festivalAlertBox").append('<div id="festivalAlert" class="alert" role="alert"><h4>'+festivalString+'</h4></div>');
-                            $("#festivalAlert").addClass(festival.color);
-                            if (festival.hasOwnProperty("shopsClosed")) { //Crosses out text for npc schedules if shops are closed for festival
+                            // replace div id with div class so that it can handle two events on the same day
+                            $("#festivalAlertBox").append(
+                                '<div class="festivalAlert alert '+festival.color+'" role="alert">' +
+                                    '<h4>' + festivalTitle + '</h4>' +
+                                    '<div>' + festivalBody + '</div>' +
+                                '</div>'
+                            );
+                            if (festival.hasOwnProperty("shopsClosed")) {
                                 $("#npcScheduleList li").css("text-decoration","line-through");
+                                $("#shopScheduleList li").css("text-decoration","line-through"); // <-- Add this line for shop schedule
                             }
                         }
                     } else { //Happens yearly
-                        $("#festivalAlertBox").append('<div id="festivalAlert" class="alert" role="alert"><h4>'+festivalString+'</h4></div>');
-                        $("#festivalAlert").addClass(festival.color);
+                        $("#festivalAlertBox").append(
+                            '<div class="festivalAlert alert '+festival.color+'" role="alert">' +
+                                '<h4>' + festivalTitle + '</h4>' +
+                                '<div>' + festivalBody + '</div>' +
+                            '</div>'
+                        );
                         if (festival.hasOwnProperty("shopsClosed")) {
                             $("#npcScheduleList li").css("text-decoration","line-through");
+                            $("#shopScheduleList li").css("text-decoration","line-through"); // <-- Add this line for shop schedule
                         }
                     }
                 }
@@ -298,6 +329,24 @@
 
             return scheduleString;
         }
+
+        function getShopSchedule(shopName) {
+            var shopData = shopInfo[shopName];
+            var scheduleString = "Unavailable";
+            if (!shopData || !shopData.schedule_blocks) return scheduleString;
+
+            // Try to find an exact match for the current day
+            for (var i = 0; i < shopData.schedule_blocks.length; i++) {
+                var block = shopData.schedule_blocks[i];
+                // Split days and trim whitespace
+                var daysArray = block.weekDays.split(',').map(s => s.trim());
+                if (daysArray.includes(dayOfWeek)) {
+                    scheduleString = block.text;
+                    break;
+                }
+            }
+            return scheduleString;
+        }
         
         function getImage(name) {
             var npcData = npcInfo[name];
@@ -324,77 +373,1020 @@
             $(dropdownString + " a").removeClass("disabled");
         }
 
+        function addShopToList(shopName, pushToTrackedShops) {
+            if (window.trackedShops === undefined) window.trackedShops = [];
+            if(trackedShops.includes(shopName) && pushToTrackedShops) return false;
+
+            var shopSchedule = getShopSchedule(shopName);
+
+            $("#shopScheduleList").append(
+                '<li class="list-group-item d-flex justify-content-between align-items-center" id="'+shopName+'ShopScheduleItem">' +
+                '<span style="width:100%; text-align:left; margin-left:15px; font-size:1em">'+shopName+': '+ shopSchedule +'</span>' +
+                '<span type="button" class="badge bg-danger" onclick="removeShop(\''+ shopName + '\')">-</span></li>'
+            );
+            if(pushToTrackedShops) {
+                trackedShops.push(shopName);
+            }
+            var dropdownString = "#" + shopName + "ShopDropdown"
+            $(dropdownString + " a").addClass("disabled");
+        }
+
+        function removeShop(shopName) {
+            trackedShops = trackedShops.filter(i => i !== shopName);
+            $('#'+shopName+'ShopScheduleItem').remove();
+
+            var dropdownString = "#" + shopName + "ShopDropdown"
+            $(dropdownString + " a").removeClass("disabled");
+        }
+
         //Start NPC Data
         function getNPCS() {
             return {
-                "Ann" : {
-                    "schedule_blocks" : [
+                "Ann": {
+                    "schedule_blocks": [
                         {
-                            "weekDays" : "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
-                            "text" : "6am-7am Inn. <br> 7:30am-10am Hot Springs. <br> 10:30am Inn. <br> Rain: Inn"
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>Sunny<ul><li>At the Inn (6:00AM to 7:00AM)</li><li>at the Hot Springs (7:30AM to 10:00AM)</li><li>at the Inn 2nd floor (10:30AM to 1:00PM)</li><li>at the Inn 1st floor (1:00PM to 4:00PM)</li><li>at the Inn 2nd floor (4:00PM to 7:00PM)</li><li>at the Inn 1st floor (7:00PM onwards)</li></ul></li><li>Rainy<ul><li>at the Inn (6:00AM to 7:00AM)</li><li>at the Inn back room (7:30AM to 10:00AM)</li><li>at the Inn 2nd floor (10:00AM to 1:00PM)</li><li>at the Inn 1st floor (1:00PM to 4:00PM)</li><li>at the Inn 2nd floor (4:00PM to 7:00PM)</li><li>at the Inn 1st floor (7:00PM onwards)</li></ul></li></ul>"
                         }
                     ],
-                    "img" : 'assets/Ann.png'
+                    "img": "assets/Ann.png"
                 },
-                "Elli" : {
-                    "schedule_blocks" : [
+                "Anna": {
+                    "schedule_blocks": [
                         {
-                            "weekDays" : "Monday, Tuesday, Thursday, Friday, Saturday, Sunday",
-                            "text" : "All Day: Clinic"
+                            "weekDays": "Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>Sunny<ul><li>inside her home (6:00AM to 1:00PM)</li><li>at Rose Square (2:00PM to 4:00PM)</li><li>inside her home (5:00PM onwards)</li></ul></li><li>Rainy<ul><li>inside her home (all day)</li></ul></li></ul>"
                         },
                         {
-                            "weekDays" : "Wednesday",
-                            "text" : "6am-9am Clinic. 9:45am-1pm Supermarket. 4:45-7:10pm Ellen's home. 7:55pm Clinic."
+                            "weekDays": "Monday",
+                            "text": "<ul><li>Sunny<ul><li>inside her home (6:00AM to 7:00AM)</li><li>Mother's Hill flower field (8:30AM to 10:00AM)</li><li>inside her home (11:30AM to 1:00PM)</li><li>inside the Supermarket (1:30PM to 4:00PM)</li><li>inside her home (4:30PM onwards)</li></ul></li><li>Rainy<ul><li>inside her home (6:00AM to 1:00PM)</li><li>inside the Supermarket (1:30PM to 4:00PM)</li><li>inside her home (4:30PM onwards)</li></ul></li></ul>"
                         }
                     ],
-                    "img" : 'assets/Elli.png'
+                    "img": "assets/Anna.png"
                 },
-                "Mary" : {
-                    "schedule_blocks" : [
+                "Aqua (Light Blue)": {
+                    "schedule_blocks": [
                         {
-                            "weekDays" : "Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
-                            "text" : "6am-10am In House. <br> 10am-4pm In Library. <br> 4pm In House."
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>in Harvest Sprites' home (all day)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Aqua (Light Blue).png"
+                },
+                "Barley": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>outside Yodel Ranch (6:00AM to 8:00AM)</li><li>inside Yodel Ranch (8:00AM onwards)</li></ul>"
                         },
                         {
-                            "weekDays" : "Monday",
-                            "text" : "6am-7am In House. <br> 8am-10am Mother Hill. <br> 1:40pm-4pm Supermarket. <br> 4:50pm In House. <br> Rain: 6am-1pm In House. 1:40pm-4pm Supermarket. 4:50 In House."
+                            "weekDays": "Monday",
+                            "text": "<ul><li>Sunny<ul><li>outside Yodel Ranch (6:00AM to 8:00AM)</li><li>at the Mayor's house (8:50AM to 1:00PM)</li><li>at the Hot Springs (1:40PM to 4:10PM)</li><li>inside Yodel Ranch (4:50PM onwards)</li></ul></li><li>Rainy<ul><li>outside Yodel Ranch (6:00AM to 8:00AM)</li><li>at the Mayor's house (9:00AM to 1:00PM)</li><li>inside Yodel Ranch (1:40PM onwards)</li></ul></li></ul>"
                         }
                     ],
-                    "img" : 'assets/Mary.png'
+                    "img": "assets/Barley.png"
+                },
+                "Basil": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>inside his home 2nd floor (6:00AM to 10:00AM)</li><li>inside his home 1st floor (10:00AM to 1:00PM)</li><li>inside his home 2nd floor (1:00PM to 4:00PM)</li><li>inside his home 1st floor (4:00PM to 7:00PM)</li><li>at the Inn (7:30PM to 10:00PM)</li><li>inside his home (10:30PM onwards)</li></ul>"
+                        },
+                        {
+                            "weekDays": "Monday",
+                            "text": "<ul><li>Sunny<ul><li>inside his home (6:00AM to 7:00AM)</li><li>Mother's Hill flower field (8:30AM to 10:00AM)</li><li>inside his home (11:30AM to 7:00PM)</li><li>at the inn (7:30PM to 10:00PM)</li><li>inside his home (10:30PM onwards)</li></ul></li><li>Rainy<ul><li>inside his home (6:00AM to 7:00PM)</li><li>at the inn (7:30PM to 10:00PM)</li><li>inside his home (10:30PM onwards)</li></ul></li></ul>"
+                        }
+                    ],
+                    "img": "assets/Basil.png"
+                },
+                "Bold (Purple)": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>in Harvest Sprites' home (all day)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Bold (Purple).png"
+                },
+                "Chef (Red)": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>in Harvest Sprites' home (all day)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Chef (Red).png"
+                },
+                "Cliff": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>inside the Inn (6:00AM to 9:00AM)</li><li>at the Church (9:40AM to 4:00PM)</li><li>inside the Inn (4:40PM onwards)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Cliff.png"
+                },
+                "Cliff winery": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Wednesday, Thursday, Friday, Sunday",
+                            "text": "<ul><li>upstairs inside the Inn (6:00AM to 10:00AM)</li><li>inside the Winery storehouse (10:50AM to 1:00PM)</li><li>outside the Winery (1:00PM to 4:00PM)</li><li>at the Church (4:40PM to 7:20PM)</li><li>at the Inn (8:10PM onwards)</li></ul>"
+                        },
+                        {
+                            "weekDays": "Tuesday, Saturday",
+                            "text": "<ul><li>upstairs inside the inn (6:00AM to 1:00PM)</li><li>downstairs inside the inn (1:00PM to 4:10PM)</li><li>inside the Church (4:50PM to 7:20PM)</li><li>at the Inn (8:10PM onwards)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Cliff winery.png"
+                },
+                "Doctor Tim": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>inside the Clinic (all day)</li></ul>"
+                        },
+                        {
+                            "weekDays": "Wednesday",
+                            "text": "<ul><li>Sunny<ul><li>inside the Clinic (6:00AM to 7:00AM)</li><li>at Mother Lake (8:00AM to 10:00AM)</li><li>inside the Clinic (10:40AM to 1:10PM)</li><li>at the Library (2:00PM to 4:00PM)</li><li>inside the Clinic (4:50PM onwards)</li></ul></li><li>Rainy<ul><li>inside the Clinic (6:00AM to 7:00AM)</li><li>at the Church (7:50AM to 10:00AM)</li><li>inside the Clinic (10:40AM to 1:10PM)</li><li>at the Library (2:00PM to 4:00PM)</li><li>inside the Clinic (4:50PM onwards)</li></ul></li></ul>"
+                        }
+                    ],
+                    "img": "assets/Doctor Tim.png"
+                },
+                "Doug": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>inside the Inn (all day)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Doug.png"
+                },
+                "Duke": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Sunday",
+                            "text": "<ul><li>inside the Winery (6:00AM to 1:10PM)</li><li>inside the Winery storehouse (1:10PM to 3:00PM)</li><li>outside of the Winery (3:00PM to 5:00PM)</li></ul>"
+                        },
+                        {
+                            "weekDays": "Saturday",
+                            "text": "<ul><li>inside the Winery (6:00AM to 1:10PM)</li><li>at the Inn (1:50PM to 4:00PM)</li><li>inside the Winery (4:40PM onwards)</li><li>at the Church (4:40PM to 7:00PM), after Cliff works at the Winery</li><li>inside the Winery (7:40PM onwards)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Duke.png"
+                },
+                "Ellen": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>at her home (all day)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Ellen.png"
+                },
+                "Elli": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>inside the Clinic (All day)</li></ul>"
+                        },
+                        {
+                            "weekDays": "Wednesday",
+                            "text": "<ul><li>inside the Clinic (6:00AM to 9:00AM)</li><li>at Ellen's house (9:45AM to 1:00PM)</li><li>inside the Supermarket (1:40PM to 4:00PM)</li><li>at Ellen's house (4:45 to 7:10PM)</li><li>inside the Clinic (7:55PM onwards)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Elli.png"
+                },
+                "Gotz": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday",
+                            "text": "<ul><li>inside his house (6:00AM to 7:00AM)</li><li>at Mother Lake (8:00AM to 10:00AM)</li><li>inside his house (10:40AM onwards; some days he will go outside from 1:00PM to 3:00PM)</li></ul>"
+                        },
+                        {
+                            "weekDays": "Saturday",
+                            "text": "<ul><li>inside his house (6:00AM to 7:00AM)</li><li>at the Mother Hill flower garden (8:00AM to 10:10AM)</li><li>inside the Mayor's house (10:40AM to 1:00PM)</li><li>inside the Supermarket (1:40PM to 4:00PM)</li><li>inside his house (4:40PM onwards)</li></ul>"
+                        },
+                        {
+                            "weekDays": "Sunday",
+                            "text": "<ul><li>inside his house (6:00AM to 1:00PM)</li><li>at the peak of Mother Hill (1:40PM to 4:10PM)</li><li>inside his house (4:50PM onwards)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Gotz.png"
+                },
+                "Gray": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>inside the inn (6:00AM to 7:00AM)</li><li>inside the blacksmithy (7:50AM to 1:00PM)</li><li>at the library (1:40PM to 4:00PM)</li><li>inside the inn (4:50PM onwards)</li></ul>"
+                        },
+                        {
+                            "weekDays": "Thursday",
+                            "text": "<ul><li>Sunny<ul><li>inside the inn (6:00AM to 7:00AM)</li><li>at the peak of Mother Hill (8:00AM to 10:00AM)</li><li>inside the blacksmithy (10:30AM to 1:00PM)</li><li>at the library (1:30PM to 4:00PM)</li><li>inside the inn (4:50PM onwards)</li></ul></li><li>Rainy<ul><li>inside the inn (6:00AM to 10:00AM)</li><li>inside the blacksmithy (10:40AM to 1:00PM)</li><li>at the library (1:40PM to 4:00PM)</li><li>inside the inn (4:50PM onwards)</li></ul></li></ul>"
+                        }
+                    ],
+                    "img": "assets/Gray.png"
+                },
+                "Greg": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday",
+                            "text": "<ul><li>inside Zack's house (all day)</li></ul>"
+                        },
+                        {
+                            "weekDays": "Friday, Saturday, Sunday",
+                            "text": "<ul><li>on the pier (7:00AM to 10:00AM)</li><li>inside Zack's house (10:00AM to 7:00PM)</li><li>on the pier (7:00PM to 10:00PM)</li><li>inside Zack's house (10:00PM onwards)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Greg.png"
+                },
+                "Harris": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>inside his home (6:00AM to 7:00AM)</li><li>at Yodel Ranch (8:30AM to 9:00AM)</li><li>at Gotz' house (10:00AM to 1:00PM)</li><li>at the Inn (2:00PM to 4:00PM)</li><li>inside his home (4:30PM to 7:00PM)</li><li>outside his home (7:00PM to 10:00PM)</li><li>inside his home (10:00PM onwards)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Harris.png"
+                },
+                "Hoggy (Yellow)": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>in Harvest Sprites' home (all day)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Hoggy (Yellow).png"
+                },
+                "Jeff": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>Sunny<ul><li>inside the Supermarket house section (6:00AM to 1:00PM)</li><li>in Rose Square (1:30PM to 4:00PM)</li><li>inside the Supermarket house section (4:45PM onwards)</li></ul></li><li>Rainy<ul><li>inside the Supermarket (all day)</li></ul></li></ul>"
+                        },
+                        {
+                            "weekDays": "Tuesday",
+                            "text": "<ul><li>inside the Supermarket (6:00AM to 7:00AM)</li><li>at Yodel Ranch (8:00AM to 10:00AM)</li><li>at Chicken Lil's (10:50AM to 1:00PM)</li><li>at Ellen's house (1:50PM to 4:00PM)</li><li>inside the Supermarket (4:40PM onwards)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Jeff.png"
+                },
+                "Kai": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>inside his shop (6:00AM to 8:00AM)</li><li>outside his shop (8:00AM to 11:30AM)</li><li>inside his shop (11:30AM to 1:00PM)</li><li>outside his shop (1:00PM to 5:00PM)</li><li>inside his shop (5:00PM onwards)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Kai.png"
+                },
+                "Kano": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>inside the mayor's house (6:00AM to 7:00PM)</li><li>inside the Inn (7:40PM to 10:10PM)</li><li>inside the mayor's house (10:50PM onwards)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Kano.png"
+                },
+                "Karen": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Wednesday, Thursday, Friday, Saturday",
+                            "text": "<ul><li>Sunny<ul><li>inside the Supermarket (6:00AM to 8:00AM)</li><li>outside the Supermarket (8:00AM to 10:30AM)</li><li>inside the Supermarket house section (10:30AM to 1:00PM)</li><li>inside the Supermarket store section (1:00PM to 4:00PM)</li><li>inside the Supermarket house section (4:00PM to 7:00PM)</li><li>on the beach (7:30PM to 10:00PM)</li><li>inside the Supermarket (10:50PM onwards)</li></ul></li><li>Rainy<ul><li>inside the Supermarket house section (6:00AM to 8:00AM)</li><li>inside the Supermarket (8:00AM to 10:00AM)</li><li>inside the Supermarket house section (10:00AM to 1:00PM)</li><li>inside the Supermarket (1:00PM to 4:00PM)</li><li>inside the Supermarket house section (4:00PM onwards)</li></ul></li></ul>"
+                        },
+                        {
+                            "weekDays": "Tuesday",
+                            "text": "<ul><li>Sunny<ul><li>inside the Supermarket (6:00AM to 8:00AM)</li><li>outside the Supermarket (8:00AM to 10:30AM)</li><li>inside the Supermarket (10:00AM to 1:00PM)</li><li>at the Hot Springs (2:00PM to 4:00PM)</li><li>inside the Supermarket (5:00PM to 7:00PM)</li><li>at the Inn (7:30PM to 10:00PM)</li><li>inside the Supermarket (10:30PM onwards)</li></ul></li><li>Rainy<ul><li>inside the Supermarket (6:00AM to 1:00PM)</li><li>inside Gotz' house (2:00PM to 4:00PM)</li><li>inside the Supermarket (5:00PM to 7:00PM)</li><li>at the Inn (7:30PM to 10:00PM)</li><li>inside the Supermarket (10:30PM onwards)</li></ul></li></ul>"
+                        },
+                        {
+                            "weekDays": "Sunday",
+                            "text": "<ul><li>inside the Supermarket (6:00AM to 7:00PM)</li><li>at the Inn (7:00PM to 10:00PM)</li><li>inside the Supermarket (10:30PM onwards)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Karen.png"
+                },
+                "Lillia": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday",
+                            "text": "<ul><li>inside Chicken Lil's (all day)</li></ul>"
+                        },
+                        {
+                            "weekDays": "Sunday",
+                            "text": "<ul><li>inside Chicken Lil's (6:00AM to 1:00PM)</li><li>inside the Clinic (1:30PM to 4:00PM)</li><li>inside Chicken Lil's (4:50PM onwards)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Lillia.png"
+                },
+                "Louis": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Sunday",
+                            "text": "<ul><li>inside Gotz' house (all day)</li></ul>"
+                        },
+                        {
+                            "weekDays": "Saturday",
+                            "text": "<ul><li>inside Gotz' house (6:00AM to 7:00AM)</li><li>at the Mother Hill flower garden (8:00AM to 10:00AM)</li><li>inside Gotz' house (10:40AM onwards)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Louis.png"
+                },
+                "Manna": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Sunday",
+                            "text": "<ul><li>inside the Winery (6:00AM to 1:00PM)</li><li>at Rose Square (1:40PM to 4:00PM)</li><li>inside the Winery (4:50PM onwards)</li></ul>"
+                        },
+                        {
+                            "weekDays": "Saturday",
+                            "text": "<ul><li>inside the Winery (6:00AM to 10:00AM)</li><li>at Anna's house (10:40AM to 1:00PM)</li><li>at the Square (1:40PM to 4:00PM)</li><li>at the Inn (1:40PM to 4:00PM), after Cliff works at the Winery</li><li>inside the Winery (4:50PM onwards)</li><li>at the Church (4:40PM to 7:00PM), after Cliff works at the Winery</li><li>inside the Winery (7:40PM onwards)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Manna.png"
+                },
+                "Mary": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>in her house (6:00AM to 10:00AM)</li><li>in the library (10:00AM to 4:00PM)</li><li>in her house (4:00PM onwards)</li></ul>"
+                        },
+                        {
+                            "weekDays": "Monday - In her house (6:00AM to 7:00AM)",
+                            "text": "<ul><li>Sunny<ul><li>on Mother Hill (8:00AM to 10:00AM)</li><li>in her house (11:00AM to 1:00PM)</li><li>at the Supermarket (1:40PM to 4:00PM)</li><li>in her house (4:50PM onwards)</li></ul></li><li>Rainy<ul><li>in her house (6:00AM to 1:00PM)</li><li>at the Supermarket (1:40PM to 4:00PM)</li><li>in her house (4:50PM onwards)</li></ul></li></ul>"
+                        }
+                    ],
+                    "img": "assets/Mary.png"
+                },
+                "May": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>Sunny<ul><li>inside Yodel Ranch (6:00AM to 7:00AM)</li><li>outside Yodel Ranch (7:00AM to 11:00AM)</li><li>inside Yodel Ranch (11:00AM to 1:00PM)</li><li>outside Yodel Ranch (1:00PM to 4:00PM)</li><li>after May and Stu event, outside the Church (1:00PM to 4:00PM), on sunny days except Monday and Wednesday</li><li>inside Yodel Ranch (4:00PM onwards)</li></ul></li><li>Rainy<ul><li>inside Yodel Ranch (all day)</li></ul></li></ul>"
+                        },
+                        {
+                            "weekDays": "Monday",
+                            "text": "<ul><li>Sunny<ul><li>inside Yodel Ranch (6:00AM to 7:00AM)</li><li>outside Yodel Ranch (7:00AM to 11:00AM)</li><li>inside Yodel Ranch (11:00AM to 1:00PM)</li><li>at the Hot Springs (1:40PM to 4:00PM)</li><li>inside Yodel Ranch (4:40PM onwards)</li></ul></li><li>Rainy<ul><li>inside Yodel Ranch (all day)</li></ul></li></ul>"
+                        }
+                    ],
+                    "img": "assets/May.png"
+                },
+                "Mayor Thomas": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday",
+                            "text": "<ul><li>inside his house (all day)</li></ul>"
+                        },
+                        {
+                            "weekDays": "Saturday",
+                            "text": "<ul><li>Sunny<ul><li>inside his house (6:00AM to 7:00AM)</li><li>inside the Supermarket (7:40AM to 10:00AM)</li><li>inside Ellen's house (10:40AM to 1:00PM)</li><li>at Rose Square (1:30PM to 4:00PM)</li><li>inside his house (4:50PM onwards)</li></ul></li><li>Rainy<ul><li>inside his house (6:00AM to 7:00AM)</li><li>inside the Supermarket (7:40AM to 10:00AM)</li><li>inside Ellen's house (10:40AM to 1:00PM)</li><li>inside his house (1:10PM onwards)</li></ul></li></ul>"
+                        },
+                        {
+                            "weekDays": "Sunday",
+                            "text": "<ul><li>Sunny<ul><li>inside his house (6:00AM to 10:00AM)</li><li>inside Ellen's House (10:10AM to 1:00PM)</li><li>at Rose Square (1:30PM to 4:00PM)</li><li>inside his house (4:50PM onwards)</li></ul></li><li>Rainy<ul><li>inside his house (6:00AM to 10:00AM)</li><li>inside Ellen's House (10:10AM to 1:00PM)</li><li>inside his house (1:10PM onwards)</li></ul></li></ul>"
+                        }
+                    ],
+                    "img": "assets/Mayor Thomas.png"
+                },
+                "Nappy (Orange)": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>in Harvest Sprites' home (all day)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Nappy (Orange).png"
+                },
+                "Pastor Carter": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>outside of the Church (6:00AM to 9:00AM)</li><li>inside of the Church (9:00AM to 1:00PM)</li><li>inside the confessionals (1:00PM to 4:00PM)</li><li>after May and Stu event, outside the Church (1:00PM to 4:00PM), on sunny days except Monday and Wednesday</li><li>inside of the Church (4:00PM onwards)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Pastor Carter.png"
+                },
+                "Popuri": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday",
+                            "text": "<ul><li>Sunny<ul><li>inside Chicken Lil's (6:00AM to 7:00AM)</li><li>at the Hot Springs (7:45AM to 10:00AM)</li><li>inside Chicken Lil's (10:45AM onwards)</li></ul></li><li>Rainy<ul><li>inside Chicken Lil's (All day)</li></ul></li></ul>"
+                        },
+                        {
+                            "weekDays": "Sunday",
+                            "text": "<ul><li>Sunny<ul><li>inside Chicken Lil's (6:00AM to 9:00AM)</li><li>at church (9:30AM to 1:00PM)</li><li>at the town square (1:30PM to 5:30PM)</li><li>inside Chicken Lil's (6:00PM onwards)</li></ul></li><li>Rainy<ul><li>inside Chicken Lil's (6:00AM to 9:00AM)</li><li>at the Church (9:30AM to 1:00PM)</li><li>inside Chicken Lil's (1:30PM onwards)</li></ul></li></ul>"
+                        }
+                    ],
+                    "img": "assets/Popuri.png"
+                },
+                "Rick": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>Sunny<ul><li>outside Chicken Lil's (6:00AM to 7:00AM)</li><li>outside the Supermarket (7:30AM to 10:00AM)</li><li>inside Chicken Lil's (10:30AM to 1:00PM)</li><li>outside Chicken Lil's (1:00PM to 4:00PM)</li><li>inside Chicken Lil's (4:00PM onwards)</li></ul></li><li>Rainy<ul><li>outside Chicken Lil's (6:00AM to 7:00AM)</li><li>inside Chicken Lil's (7:00AM to 1:00PM)</li><li>outside Chicken Lil's (1:00PM to 4:00PM)</li><li>inside Chicken Lil's (4:00PM onwards)</li></ul></li></ul>"
+                        },
+                        {
+                            "weekDays": "Tuesday",
+                            "text": "<ul><li>Sunny<ul><li>outside Chicken Lil's (6:00AM to 7:00AM)</li><li>in the Square (7:40AM to 10:00AM)</li><li>inside Chicken Lil's (10:50AM to 1:00PM)</li><li>inside the blacksmithy (1:40PM to 4:00PM)</li><li>inside Chicken Lil's (4:40PM onwards)</li></ul></li><li>Rainy<ul><li>outside Chicken Lil's (6:00AM to 7:00AM)</li><li>inside Chicken Lil's (7:00AM to 1:00PM)</li><li>inside the blacksmithy (1:40PM to 4:00PM)</li><li>inside Chicken Lil's (4:40PM onwards)</li></ul></li></ul>"
+                        }
+                    ],
+                    "img": "assets/Rick.png"
+                },
+                "Saibara": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>inside the blacksmithy (all day)</li></ul>"
+                        },
+                        {
+                            "weekDays": "Thursday",
+                            "text": "<ul><li>Sunny<ul><li>locked inside the blacksmithy (6:00AM to 7:00AM)</li><li>at the peak of Mother Hill (8:00AM to 10:00AM)</li><li>inside the blacksmithy (10:30AM to 1:00PM)</li><li>inside the supermarket (1:50PM to 4:00PM)</li><li>locked inside the blacksmithy (4:55PM onwards)</li></ul></li><li>Rainy<ul><li>locked inside the blacksmithy (6:00AM to 10:00AM)</li><li>inside the blacksmithy (10:00AM to 6:00PM)</li><li>locked inside the blacksmithy (6:00PM onwards)</li></ul></li></ul>"
+                        }
+                    ],
+                    "img": "assets/Saibara.png"
+                },
+                "Staid (Blue)": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>in Harvest Sprites' home (all day)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Staid (Blue).png"
+                },
+                "Stu": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>Sunny<ul><li>inside his house (6:00AM to 1:00PM)</li><li>outside his house (1:00PM to 4:00PM)</li><li>after May and Stu event, outside the Church (1:00PM to 4:00PM), on sunny days except Monday and Wednesday</li><li>inside his house (4:00PM onwards)</li></ul></li><li>Rainy<ul><li>inside his house (all day)</li></ul></li></ul>"
+                        }
+                    ],
+                    "img": "assets/Stu.png"
+                },
+                "Timid (Green)": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>in Harvest Sprites' home (all day)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Timid (Green).png"
+                },
+                "Won": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>nowhere at all (6:00AM to 1:00PM)</li><li>at the Inn (1:00PM to 4:00PM)</li><li>nowhere at all (4:00PM onwards)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Won.png"
+                },
+                "Zack": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>inside his house (6:00AM to 7:00AM)</li><li>inside the Supermarket (7:40AM to 10:00AM)</li><li>inside his house (10:40AM to 4:00PM*)</li><li>at your farm (4:50PM to 5:50PM)</li><li>inside his house (7:50PM onwards)</li></ul>"
+                        }
+                    ],
+                    "img": "assets/Zack.png"
                 }
             }
         } 
         //End NPC Data
-        //TODO: Add shops in as NPCS.
+
+        //Start Shops Data
+        function getShops() {
+            return {
+                "Saibara Blacksmith": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>Open: 9:00AM - 4:00PM</li></ul>"
+                        },
+                        {
+                            "weekDays": "Thursday",
+                            "text": "<ul><li>Closed</li></ul>"
+                        }
+                    ]
+                },
+                "Aja Winery": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Sunday",
+                            "text": "<ul><li>Open: 9:00AM - 12:00PM</li></ul>"
+                        },
+                        {
+                            "weekDays": "Saturday",
+                            "text": "<ul><li>Closed</li></ul>"
+                        }
+                    ]
+                },
+                "Library": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>Open: 10:00AM - 4:00PM</li></ul>"
+                        },
+                        {
+                            "weekDays": "Monday",
+                            "text": "<ul><li>Closed</li></ul>"
+                        }
+                    ]
+                },
+                "Chicken Lil": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday",
+                            "text": "<ul><li>Open: 11:00AM - 4:00PM</li></ul>"
+                        },
+                        {
+                            "weekDays": "Sunday",
+                            "text": "<ul><li>Closed</li></ul>"
+                        }
+                    ]
+                },
+                "Yodel Ranch": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>Open: 9:00AM - 3:00PM</li></ul>"
+                        },
+                        {
+                            "weekDays": "Monday",
+                            "text": "<ul><li>Closed</li></ul>"
+                        }
+                    ]
+                },
+                "Gotz House": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday",
+                            "text": "<ul><li>Open: 11:00AM - 5:00PM</li></ul>"
+                        },
+                        {
+                            "weekDays": "Saturday, Sunday",
+                            "text": "<ul><li>Closed</li></ul>"
+                        }
+                    ]
+                },
+                "Supermarket": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Wednesday, Thursday, Friday, Saturday",
+                            "text": "<ul><li>Open: 9:00AM - 6:00PM</li></ul>"
+                        },
+                        {
+                            "weekDays": "Tuesday, Sunday",
+                            "text": "<ul><li>Closed</li></ul>"
+                        }
+                    ]
+                },
+                "Clinic": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>Open: 09:00AM - 6:00PM</li></ul>"
+                        },
+                        {
+                            "weekDays": "Wednesday",
+                            "text": "<ul><li>Closed</li></ul>"
+                        }
+                    ]
+                },
+                "Seaside Lodge": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>Open: 8:00AM - 11:30PM, 1:00PM - 5:00PM</li></ul>"
+                        }
+                    ]
+                },
+                "Inn": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>Open: 8:00AM - 9:00PM</li></ul>"
+                        }
+                    ]
+                },
+                "Won Seed Corner": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>Open: 1:00PM - 4:00PM</li></ul>"
+                        }
+                    ]
+                },
+                "Church": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>Open: 10:00AM - 5:00PM</li></ul>"
+                        }
+                    ]
+                },
+                "Harvest Sprites": {
+                    "schedule_blocks": [
+                        {
+                            "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                            "text": "<ul><li>Open: 10:00AM - 5:00PM</li></ul>"
+                        }
+                    ]
+                }
+            };
+        }
 
         //Start Festival Data
-        function getFestivalsAndBirthdays()  {
+        function getFestivalsAndBirthdays() {
             return {
-                "Spring Years Day: " : {
-                    "season" : "Spring",
-                    "day" : "1",
-                    "text" : "New Years Festival",
+                "New Year's Party": {
+                    "season": "Spring",
+                    "day": 1,
+                    "text": "<br> 6:00PM - 7:50PM, Square or Inn",
                     "shopsClosed": "true",
                     "color" : "alert-danger"
                 },
-                "Louis Birthday" : {
-                    "season" : "Spring",
-                    "day" : "2",
-                    "text" : "",
-                    "color" : "alert-info"
-                },
-                "Bold's Birthday" : {
-                    "season" : "Spring",
-                    "day" : "4",
-                    "text" : "",
-                    "color" : "alert-info"
-                },
-                "Goddess Festival: " : {
-                    "season" : "Spring",
-                    "day" : "8",
-                    "text" : "10am-2:50pm Rose Square.",
+                "Goddess Festival": {
+                    "season": "Spring",
+                    "day": 8,
+                    "text": "<br> 10:00AM - 2:50PM, Square",
                     "shopsClosed": "true",
                     "color" : "alert-danger"
+                },
+                "Spring Thanksgiving": {
+                    "season": "Spring",
+                    "day": 14,
+                    "text": "<br> until 5:00PM, anywhere",
+                    "color" : "alert-info"
+                },
+                "Local Horse Race": {
+                    "season": "Spring",
+                    "day": 18,
+                    "text": "<br> 10:00AM - 2:50PM, Square",
+                    "shopsClosed": "true",
+                    "color" : "alert-danger"
+                },
+                "Cooking Festival": {
+                    "season": "Spring",
+                    "day": 22,
+                    "text": "<br> 10:00AM - 2:50PM, Square",
+                    "shopsClosed": "true",
+                    "color" : "alert-danger"
+                },
+                "Swimming Festival": {
+                    "season": "Summer",
+                    "day": 1,
+                    "text": "<br> 10:00AM - 2:50PM, Mineral Beach",
+                    "shopsClosed": "true",
+                    "color" : "alert-danger"
+                },
+                "Sumo Chicken Festival": {
+                    "season": "Summer",
+                    "day": 7,
+                    "text": "<br> 10:00AM - 2:50PM, Square",
+                    "shopsClosed": "true",
+                    "color" : "alert-danger"
+                },
+                "Tomato Festival": {
+                    "season": "Summer",
+                    "day": 12,
+                    "text": "<br> 10:00AM - 2:50PM, Square",
+                    "shopsClosed": "true",
+                    "color" : "alert-danger"
+                },
+                "Cow Festival": {
+                    "season": "Summer",
+                    "day": 20,
+                    "text": "<br> 10:00AM - 2:50PM, Yodel Ranch",
+                    "shopsClosed": "true",
+                    "color" : "alert-danger"
+                },
+                "Fireworks Display": {
+                    "season": "Summer",
+                    "day": 24,
+                    "text": "<br> 6:00PM - 7:50PM, Mineral Beach",
+                    "shopsClosed": "true",
+                    "color" : "alert-danger"
+                },
+                "Music Festival": {
+                    "season": "Fall",
+                    "day": 3,
+                    "text": "<br> 6:00PM - 6:50PM, Church",
+                    "shopsClosed": "true",
+                    "color" : "alert-danger"
+                },
+                "Harvest Festival": {
+                    "season": "Fall",
+                    "day": 9,
+                    "text": "<br> 10:00AM - 2:50PM, Square",
+                    "shopsClosed": "true",
+                    "color" : "alert-danger"
+                },
+                "Moon-Viewing Day": {
+                    "season": "Fall",
+                    "day": 13,
+                    "text": "<br> 6:00PM - 11:50PM, Mother Hill peak",
+                    "color" : "alert-info"
+                },
+                "Sheep Festival": {
+                    "season": "Fall",
+                    "day": 21,
+                    "text": "<br> 10:00AM - 2:50PM, Yodel Ranch",
+                    "shopsClosed": "true",
+                    "color" : "alert-danger"
+                },
+                "Dog Race": {
+                    "season": "Winter",
+                    "day": 10,
+                    "text": "<br> 10:00AM - 2:50PM, Square",
+                    "shopsClosed": "true",
+                    "color" : "alert-danger"
+                },
+                "Winter Thanksgiving": {
+                    "season": "Winter",
+                    "day": 14,
+                    "text": "<br> 6:00AM Popuri, 8:00AM Ann, 10:00AM Elli, 1:00PM Karen, 3:00PM Mary; Farm",
+                    "color" : "alert-info"
+                },
+                "Star Night Festival": {
+                    "season": "Winter",
+                    "day": 24,
+                    "text": "<br> 6:00PM - 7:50PM, at girl's house if you're single, at home if you're married",
+                    "shopsClosed": "true",
+                    "color" : "alert-danger"
+                },
+                "New Year's Eve": {
+                    "season": "Winter",
+                    "day": 30,
+                    "text": "<br> 12:00AM - 4:50AM, Mother Hill peak",
+                    "shopsClosed": "true",
+                    "color" : "alert-danger"
+                },
+                ///////////////
+                // Birthdays //
+                ///////////////
+                "Ann's Birthday": {
+                    "season": "Summer",
+                    "day": "17",
+                    "text": "<br> Loves: Spa-Boiled Egg, Veggie Pancake, Fried Rice, Stir Fry, Stew, Curry, Salad, Sandwich, Strawberry Milk, Pumpkin Pudding, Roasted Potatoes, Omelet, Cheesecake, Cheese Fondue, Apple Pie, Bamboo Rice, Mushroom Rice, Truffle Rice, Sushi, Grilled Fish, Tempura Noodles, Fried Noodles, Ice Cream, Cake, Chocolate, Chocolate Cake, Rice Omelet",
+                    "color": "alert-info"
+                },
+                "Ann's Birthday (alternate)": {
+                    "season": "Summer",
+                    "day": "22",
+                    "text": "<br> Loves: Spa-Boiled Egg, Veggie Pancake, Fried Rice, Stir Fry, Stew, Curry, Salad, Sandwich, Strawberry Milk, Pumpkin Pudding, Roasted Potatoes, Omelet, Cheesecake, Cheese Fondue, Apple Pie, Bamboo Rice, Mushroom Rice, Truffle Rice, Sushi, Grilled Fish, Tempura Noodles, Fried Noodles, Ice Cream, Cake, Chocolate, Chocolate Cake, Rice Omelet",
+                    "color": "alert-info"
+                },
+                "Anna's Birthday": {
+                    "season": "Fall",
+                    "day": "22",
+                    "text": "<br> Loves: Moondrop Flower, Pink Cat Flower, Blue Magic Red Flower, Red Magic Red Flower, Toy Flower, Orange Cup Fruit, Ketchup Recipe, Strawberry Jam, Strawberry Milk, Cheesecake, Apple Jam, Apple Pie, Grape Jam, Cookie, Ice Cream, Cake, Chocolate Cookie, Chocolate Cake",
+                    "color": "alert-info"
+                },
+                "Aqua (Light Blue)'s Birthday": {
+                    "season": "Spring",
+                    "day": "26",
+                    "text": "<br> Loves: Wild Grape, Yarn Ball, Honey, Bread, Bodigizer, Bodigizer XL, Turbojolt XL, Wine, Flour, Fruit Juice, Mixed Juice, Strawberry Jam, Strawberry Milk, Pumpkin Pudding, Sweet Potato (dish), Omelet, Hot Milk, Butter, Apple Jam, Apple Pie, Grape Jam, Raisin Bread, Pizza, Cookie, Cake, Chocolate Cookie, Chocolate Cake, Relaxation Tea Leaves, Relaxation Tea, Jewelry",
+                    "color": "alert-info"
+                },
+                "Barley's Birthday": {
+                    "season": "Spring",
+                    "day": "17",
+                    "text": "<br> Loves: Spa-Boiled Egg, Rice Ball",
+                    "color": "alert-info"
+                },
+                "Basil's Birthday": {
+                    "season": "Summer",
+                    "day": "11",
+                    "text": "<br> Loves: Wild Grape, Mushroom, Poisonous Mushroom, Truffle, Blue Grass, Green Grass, Spa-Boiled Egg, Fruit Juice, Vegetable Juice, Mixed Juice, Tomato Juice, Pumpkin Pudding, Sweet Potato (dish), Cheesecake, Apple Pie, Bamboo Rice, Mushroom Rice, Truffle Rice, Cookie, Relaxation Tea Leaves, Fruit Latte, Veggie Latte, Mixed Latte",
+                    "color": "alert-info"
+                },
+                "Bold (Purple)'s Birthday": {
+                    "season": "Spring",
+                    "day": "4",
+                    "text": "<br> Loves: Wild Grape, Yarn Ball, Honey, Bread, Bodigizer, Bodigizer XL, Turbojolt XL, Wine, Flour, Fruit Juice, Mixed Juice, Strawberry Jam, Strawberry Milk, Pumpkin Pudding, Sweet Potato (dish), Omelet, Hot Milk, Butter, Apple Jam, Apple Pie, Grape Jam, Raisin Bread, Pizza, Cookie, Cake, Chocolate Cookie, Chocolate Cake, Relaxation Tea Leaves, Relaxation Tea, Jewelry",
+                    "color": "alert-info"
+                },
+                "Chef (Red)'s Birthday": {
+                    "season": "Fall",
+                    "day": "14",
+                    "text": "<br> Loves: Wild Grape, Yarn Ball, Honey, Bread, Bodigizer, Bodigizer XL, Turbojolt XL, Wine, Flour, Fruit Juice, Mixed Juice, Strawberry Jam, Strawberry Milk, Pumpkin Pudding, Sweet Potato (dish), Omelet, Hot Milk, Butter, Apple Jam, Apple Pie, Grape Jam, Raisin Bread, Pizza, Cookie, Cake, Chocolate Cookie, Chocolate Cake, Relaxation Tea Leaves, Relaxation Tea, Jewelry",
+                    "color": "alert-info"
+                },
+                "Cliff's Birthday": {
+                    "season": "Summer",
+                    "day": "6",
+                    "text": "<br> Loves: Spa-Boiled Egg, Veggie Pancake, Stir Fry, Miso Soup, Stew, Curry, Vegetable Juice, Sandwich, Happy Eggplant, Greens, Scrambled Eggs, Omelet, Boiled Egg, Hot Milk, Cheese Fondue, Bamboo Rice, Mushroom Rice, Truffle Rice, Sushi, Chirashi Sushi, Pizza, Curry Noodles, Tempura Noodles, Tempura, Fruit Latte, Veggie Latte, Mixed Latte, Rice Omelet",
+                    "color": "alert-info"
+                },
+                "Doctor Tim's Birthday": {
+                    "season": "Fall",
+                    "day": "17",
+                    "text": "<br> Loves: Blue Magic Red Flower, Red Magic Red Flower, Bamboo Shoot, Poisonous Mushroom, Blue Grass, Red Grass, Spa-Boiled Egg, Wine, Large Fish, Stew, Fruit Juice, Vegetable Juice, Mixed Juice, Fruit Latte, Veggie Latte, Mixed Latte",
+                    "color": "alert-info"
+                },
+                "Doug's Birthday": {
+                    "season": "Winter",
+                    "day": "11",
+                    "text": "<br> Loves: Bamboo Shoot, Mushroom, Truffle, Green Grass, Ketchup Recipe, Honey, Bodigizer XL, Turbojolt XL, Wine, Fish, Oil, Flour, Curry Powder, Butter, Cheese Fondue, Chocolate, Ketchup",
+                    "color": "alert-info"
+                },
+                "Duke's Birthday": {
+                    "season": "Winter",
+                    "day": "15",
+                    "text": "<br> Loves: Spa-Boiled Egg, Bread, Wine, Grape Juice, Large Fish, Stir Fry, Miso Soup, Pickles, Happy Eggplant, Greens, Cheese Fondue, Bamboo Rice, Sushi, Chirashi Sushi, Sashimi, Grilled Fish, Pizza, Tempura",
+                    "color": "alert-info"
+                },
+                "Ellen's Birthday": {
+                    "season": "Winter",
+                    "day": "13",
+                    "text": "<br> Loves: Moondrop Flower, Pink Cat Flower, Blue Magic Red Flower, Red Magic Red Flower, Toy Flower, Orange Cup Fruit, Bamboo Shoot, Wild Grape, Mushroom, Truffle, Spa-Boiled Egg, Yarn Ball, Honey, Bodigizer, Bodigizer XL, Large Fish, Flour, Stew, Fruit Juice, Vegetable Juice, Tomato Juice, Apple Pie, Bamboo Rice, Mushroom Rice, Truffle Rice, Relaxation Tea Leaves, Relaxation Tea",
+                    "color": "alert-info"
+                },
+                "Elli's Birthday": {
+                    "season": "Spring",
+                    "day": "16",
+                    "text": "<br> Loves: Moondrop Flower, Pink Cat Flower, Blue Magic Red Flower, Red Magic Red Flower, Toy Flower, Orange Cup Fruit, Ketchup Recipe, Bandage, Jewelry",
+                    "color": "alert-info"
+                },
+                "Elli's Birthday (alternate)": {
+                    "season": "Spring",
+                    "day": "20",
+                    "text": "<br> Loves: Moondrop Flower, Pink Cat Flower, Blue Magic Red Flower, Red Magic Red Flower, Toy Flower, Orange Cup Fruit, Ketchup Recipe, Bandage, Jewelry",
+                    "color": "alert-info"
+                },
+                "Gotz's Birthday": {
+                    "season": "Fall",
+                    "day": "2",
+                    "text": "<br> Loves: Lumber, Mystrile, Orichalcum, Adamantite, Gold Ore, Silver Ore, Copper Ore, Egg, Mayonnaise, Milk, Cheese, Wool, SUGDW Apple, Rice Ball, Bread, Grape Juice, Medium Fish, Miso Soup, Salad, Fruit Juice, Vegetable Juice, Mixed Juice, Strawberry Jam, Tomato Juice, Happy Eggplant, Greens, Omelet, Hot Milk, Cheese Fondue, Apple Jam, Apple Pie, Jam Bun, Raisin Bread, Dinner Roll, Sashimi, Grilled Fish, Noodles, Curry Noodles, Tempura Noodles, Tempura, Ice Cream, Cake, Golden Egg, Chocolate Cookie, Fruit Latte, Veggie Latte, Mixed Latte, Rice Omelet",
+                    "color": "alert-info"
+                },
+                "Gray's Birthday": {
+                    "season": "Winter",
+                    "day": "6",
+                    "text": "<br> Loves: Mystrile, Orichalcum, Adamantite, Gold Ore, Silver Ore, Copper Ore, Bodigizer XL, Turbojolt XL, Veggie Pancake, Fried Rice, Curry, Roasted Potatoes, Ice Cream, Chocolate, Rice Omelet",
+                    "color": "alert-info"
+                },
+                "Greg's Birthday": {
+                    "season": "Spring",
+                    "day": "29",
+                    "text": "<br> Loves: Large Fish",
+                    "color": "alert-info"
+                },
+                "Harris's Birthday": {
+                    "season": "Summer",
+                    "day": "4",
+                    "text": "<br> Loves: Spa-Boiled Egg, Bodigizer XL, Turbojolt, Turbojolt XL, Wine, Fried Rice, Vegetable Juice, Mixed Juice, Sandwich, Fries, Cheese Fondue, Apple Pie, Cake, Chocolate Cake, Relaxation Tea, Veggie Latte",
+                    "color": "alert-info"
+                },
+                "Hoggy (Yellow)'s Birthday": {
+                    "season": "Fall",
+                    "day": "10",
+                    "text": "<br> Loves: Wild Grape, Yarn Ball, Honey, Bread, Bodigizer, Bodigizer XL, Turbojolt XL, Wine, Flour, Fruit Juice, Mixed Juice, Strawberry Jam, Strawberry Milk, Pumpkin Pudding, Sweet Potato (dish), Omelet, Hot Milk, Butter, Apple Jam, Apple Pie, Grape Jam, Raisin Bread, Pizza, Cookie, Cake, Chocolate Cookie, Chocolate Cake, Relaxation Tea Leaves, Relaxation Tea, Jewelry",
+                    "color": "alert-info"
+                },
+                "Jeff's Birthday": {
+                    "season": "Winter",
+                    "day": "29",
+                    "text": "<br> Loves: Bamboo Shoot, Bodigizer, Bodigizer XL, Turbojolt, Turbojolt XL, Fruit Juice, Vegetable Juice, Mixed Juice, Tomato Juice, Apple Pie, Bamboo Rice, Truffle Rice, Grape Jam, Cookie, Chocolate Cookie, Chocolate Cake, Relaxation Tea, Fruit Latte, Vegetable Latte, Mixed Latte",
+                    "color": "alert-info"
+                },
+                "Kai's Birthday": {
+                    "season": "Summer",
+                    "day": "22",
+                    "text": "<br> Loves: Bread, Bodigizer, Bodigizer XL, Turbojolt, Turbojolt XL, Wine, Large Fish, Oil, Flour, Butter, Pizza",
+                    "color": "alert-info"
+                },
+                "Kano's Birthday": {
+                    "season": "Winter",
+                    "day": "2",
+                    "text": "<br> Loves: Bamboo Shoot, Wild Grape, Mushroom, Poisonous Mushroom, Truffle, Blue Grass, Red Grass, Green Grass, Spa-Boiled Egg, Honey, Wine, Grape Juice, Large Fish, Butter, Grape Jam, Relaxation Tea Leaves, Relaxation Tea",
+                    "color": "alert-info"
+                },
+                "Karen's Birthday": {
+                    "season": "Fall",
+                    "day": "15",
+                    "text": "<br> Loves: Truffle, Wine, Fries, Popcorn, Sashimi, Pizza",
+                    "color": "alert-info"
+                },
+                "Karen's Birthday (alternate) ": {
+                    "season": "Fall",
+                    "day": "22",
+                    "text": "<br> Loves: Truffle, Wine, Fries, Popcorn, Sashimi, Pizza",
+                    "color": "alert-info"
+                },
+                "Lillia's Birthday": {
+                    "season": "Spring",
+                    "day": "19",
+                    "text": "<br> Loves: Blue Magic Red Flower, Red Magic Red Flower, Wild Grape, Truffle, Blue Grass, Green Grass, Bodigizer, Bodigizer XL, Turbojolt, Turbojolt XL, Large Fish, Chocolate Cookie, Relaxation Tea Leaves, Relaxation Tea",
+                    "color": "alert-info"
+                },
+                "Louis's Birthday": {
+                    "season": "Spring",
+                    "day": "2",
+                    "text": "<br> Loves: Honey, Bread, Grape Juice, Pickled Turnips, Pickles, Strawberry Jam, Tomato Juice, Apple Jam, Apple Pie, Mushroom Rice, Grape Jam",
+                    "color": "alert-info"
+                },
+                "Manna's Birthday": {
+                    "season": "Fall",
+                    "day": "11",
+                    "text": "<br> Loves: Pink Cat Flower, Orange Cup Fruit, Honey, Large Fish, Medium Fish, Vegetable Juice, Strawberry Jam, Tomato Juice, Apple Jam, Truffle Rice, Sushi, Raisin Bread, Relaxation Tea Leaves, Relaxation Tea, Veggie Latte",
+                    "color": "alert-info"
+                },
+                "Mary's Birthday": {
+                    "season": "Winter",
+                    "day": "20",
+                    "text": "<br> Loves: Bamboo Shoot, Mushroom, Poisonous Mushroom, Truffle, Blue Grass, Red Grass, Green Grass, Bodigizer, Bodigizer XL, Turbojolt, Turbojolt XL, Vegetable Juice, Tomato Juice, Pumpkin Pudding, Cheese Fondue, Bamboo Rice, Mushroom Rice, Truffle Rice, Grape Jam, Raisin Bread, Relaxation Tea Leaves, Relaxation Tea, Veggie Latte",
+                    "color": "alert-info"
+                },
+                "Mary's Birthday (alternate)": {
+                    "season": "Winter",
+                    "day": "25",
+                    "text": "<br> Loves: Bamboo Shoot, Mushroom, Poisonous Mushroom, Truffle, Blue Grass, Red Grass, Green Grass, Bodigizer, Bodigizer XL, Turbojolt, Turbojolt XL, Vegetable Juice, Tomato Juice, Pumpkin Pudding, Cheese Fondue, Bamboo Rice, Mushroom Rice, Truffle Rice, Grape Jam, Raisin Bread, Relaxation Tea Leaves, Relaxation Tea, Veggie Latte",
+                    "color": "alert-info"
+                },
+                "May's Birthday": {
+                    "season": "Winter",
+                    "day": "26",
+                    "text": "<br> Loves: Lumber, Moondrop Flower, Pink Cat Flower, Blue Magic Red Flower, Red Magic Red Flower, Toy Flower, Orange Cup Fruit, Ketchup Recipe, Fodder, Yarn Ball, Honey, Grape Juice, Large Fish, Stew, Fruit Juice, Strawberry Jam, Strawberry Milk, Pumpkin Pudding, Sweet Potato (dish), Apple Jam, Jam Bun, Cookie, Ice Cream, Cake, Garbage, Fries Recipe, Chocolate, Chocolate Cookies, Chocolate Cake, Bandage, Relaxation Tea Leaves, Rice Omelet, Winter Lumber",
+                    "color": "alert-info"
+                },
+                "Mayor Thomas's Birthday": {
+                    "season": "Summer",
+                    "day": "25",
+                    "text": "<br> Loves: Bamboo Shoot, Truffle, Wine, Bamboo Rice, Truffle Rice, Sashimi",
+                    "color": "alert-info"
+                },
+                "Nappy (Orange)'s Birthday": {
+                    "season": "Winter",
+                    "day": "22",
+                    "text": "<br> Loves: Wild Grape, Yarn Ball, Honey, Bread, Bodigizer, Bodigizer XL, Turbojolt XL, Wine, Flour, Fruit Juice, Mixed Juice, Strawberry Jam, Strawberry Milk, Pumpkin Pudding, Sweet Potato (dish), Omelet, Hot Milk, Butter, Apple Jam, Apple Pie, Grape Jam, Raisin Bread, Pizza, Cookie, Cake, Chocolate Cookie, Chocolate Cake, Relaxation Tea Leaves, Relaxation Tea, Jewelry",
+                    "color": "alert-info"
+                },
+                "Pastor Carter's Birthday": {
+                    "season": "Fall",
+                    "day": "20",
+                    "text": "<br> Loves: Lumber, Orange Cup Fruit, Bread, Wine, Fish, Oil, Flour, Curry Powder, Stew, Fries, Strawberry Milk, Popcorn, Roasted Potatoes, Hot Milk, Butter, Bandage, Ketchup, Winter Lumber",
+                    "color": "alert-info"
+                },
+                "Popuri's Birthday": {
+                    "season": "Summer",
+                    "day": "3",
+                    "text": "<br> Loves: Pink Cat Flower, Toy Flower, Spa-Boiled Egg, Honey, Fruit Juice, Sandwich, Strawberry Jam, Strawberry Milk, Scrambled Eggs, Omelet, Boiled Egg, Hot Milk, Apple Jam, Apple Pie, Ice Cream, Cake, Chocolate, Chocolate Cake, Relaxation Tea, Rice Omelet, Jewelry",
+                    "color": "alert-info"
+                },
+                "Popuri's Birthday (alternate)": {
+                    "season": "Summer",
+                    "day": "10",
+                    "text": "<br> Loves: Pink Cat Flower, Toy Flower, Spa-Boiled Egg, Honey, Fruit Juice, Sandwich, Strawberry Jam, Strawberry Milk, Scrambled Eggs, Omelet, Boiled Egg, Hot Milk, Apple Jam, Apple Pie, Ice Cream, Cake, Chocolate, Chocolate Cake, Relaxation Tea, Rice Omelet, Jewelry",
+                    "color": "alert-info"
+                },
+                "Rick's Birthday": {
+                    "season": "Fall",
+                    "day": "27",
+                    "text": "<br> Loves: Spa-Boiled Egg, Honey, Bodigizer, Bodigizer XL, Turbojolt, Turbojolt XL, Wine, Large Fish, Curry, Strawberry Milk, Popcorn, Scrambled Eggs, Omelet, Boiled Egg, Chocolate, Chocolate Cake, Rice Omelet",
+                    "color": "alert-info"
+                },
+                "Saibara's Birthday": {
+                    "season": "Spring",
+                    "day": "11",
+                    "text": "<br> Loves: Bamboo Shoot, Truffle, Large Fish, Miso Soup, Pickled Turnips, Pickles, Bamboo Rice, Truffle Rice",
+                    "color": "alert-info"
+                },
+                "Sasha's Birthday": {
+                    "season": "Spring",
+                    "day": "30",
+                    "text": "<br> Loves: Cookie, Chocolate, Chocolate Cookie, Chocolate Cake",
+                    "color": "alert-info"
+                },
+                "Staid (Blue)'s Birthday": {
+                    "season": "Spring",
+                    "day": "15",
+                    "text": "<br> Loves: Wild Grape, Yarn Ball, Honey, Bread, Bodigizer, Bodigizer XL, Turbojolt XL, Wine, Flour, Fruit Juice, Mixed Juice, Strawberry Jam, Strawberry Milk, Pumpkin Pudding, Sweet Potato (dish), Omelet, Hot Milk, Butter, Apple Jam, Apple Pie, Grape Jam, Raisin Bread, Pizza, Cookie, Cake, Chocolate Cookie, Chocolate Cake, Relaxation Tea Leaves, Relaxation Tea, Jewelry",
+                    "color": "alert-info"
+                },
+                "Stu's Birthday": {
+                    "season": "Fall",
+                    "day": "5",
+                    "text": "<br> Loves: Orange Cup Fruit, Wild Grape, Ketchup Recipe, Yarn Ball, Honey, Grape Juice, Fruit Juice, Sandwich, Fries, Strawberry Jam, Strawberry Milk, Popcorn, Sweet Potato (dish), Hot Milk, Cheesecake, Cheese Fondue, Apple Pie, Pizza, Cookie, Ice Cream, Cake, Chocolate, Chocolate Cookies, Chocolate Cake, Bandage, Ketchup, Rice Omelet",
+                    "color": "alert-info"
+                },
+                "Timid (Green)'s Birthday": {
+                    "season": "Summer",
+                    "day": "16",
+                    "text": "<br> Loves: Wild Grape, Yarn Ball, Honey, Bread, Bodigizer, Bodigizer XL, Turbojolt XL, Wine, Flour, Fruit Juice, Mixed Juice, Strawberry Jam, Strawberry Milk, Pumpkin Pudding, Sweet Potato (dish), Omelet, Hot Milk, Butter, Apple Jam, Apple Pie, Grape Jam, Raisin Bread, Pizza, Cookie, Cake, Chocolate Cookie, Chocolate Cake, Relaxation Tea Leaves, Relaxation Tea, Jewelry",
+                    "color": "alert-info"
+                },
+                "Won's Birthday": {
+                    "season": "Winter",
+                    "day": "19",
+                    "text": "<br> Loves: Nothing (how appropriate...)",
+                    "color": "alert-info"
+                },
+                "Zack's Birthday": {
+                    "season": "Summer",
+                    "day": "29",
+                    "text": "<br> Loves: Pink Cat Flower, Orichalcum, Bodigizer, Bodigizer XL, Turbojolt, Turbojolt XL, Wine, Large Fish, Veggie Pancake, Fried Rice, Curry, Bamboo Rice, Mushroom Rice, Truffle Rice, Sushi, Chirashi Sushi, Pizza, Curry Noodles, Tempura Noodles, Fried Noodles, Rice Omelet",
+                    "color": "alert-info"
                 }
             }
         }
@@ -404,87 +1396,103 @@
 
   <body onload="onLoad()">
     <nav class="navbar fixed-top navbar-light bg-light">
-        <div class="container-fluid">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col dropdown">
-                        <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        + Add NPC
-                        </button>
-                        <ul id="dropdownList" class="dropdown-menu" style=" overflow-y:scroll; max-height: 50vh;" aria-labelledby="dropdownMenuButton1">
-                            <!-- Dropdown generated in onLoad() -->
-                        </ul>
-                    </div>
-                    <div class="col text-center">
-                        <h6>Harvest Moon: <br> Back To Nature </h6>
-                    </div>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col dropdown">
+                    <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    + Add NPC
+                    </button>
+                    <ul id="dropdownList" class="dropdown-menu" style=" overflow-y:scroll; max-height: 50vh;" aria-labelledby="dropdownMenuButton1">
+                        <!-- Dropdown generated in onLoad() -->
+                    </ul>
                 </div>
+                <div class="col dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="shopDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    + Add Shops
+                    </button>
+                    <ul id="shopDropdownList" class="dropdown-menu" style=" overflow-y:scroll; max-height: 50vh;" aria-labelledby="shopDropdownMenuButton">
+                        <!-- Dropdown generated in onLoad() -->
+                    </ul>
+                </div>
+                <div class="col text-center">
+                    <h6>Harvest Moon: <br> Back To Nature </h6>
+                </div>
+            </div>
 
-                <div class="row">
-                    <div class="col dropdown">
-                        <button class="btn dropdown-toggle" type="button" id="seasonDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 3px;">
-                            Season
-                        </button>
-                        <ul id="seasonDropdownList" class="dropdown-menu" style=" overflow-y:scroll; max-height: 50vh;" aria-labelledby="seasonDropdownMenuButton">
-                            <li id="SpringDropdown"><a class="dropdown-item" >Spring</a></li>
-                            <li id="SummerDropdown"><a class="dropdown-item" >Summer</a></li>
-                            <li id="FallDropdown"><a class="dropdown-item" >Fall</a></li>
-                            <li id="WinterDropdown"><a class="dropdown-item" >Winter</a></li>
-                        </ul>
-                    </div>
-                    <div class="col dropdown">
-                        <button class="btn dropdown-toggle" type="button" id="dayDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 3px;">
-                        Day
-                        </button>
-                        <ul id="dayDropdownList" class="dropdown-menu" style=" overflow-y:scroll; max-height: 50vh;" aria-labelledby="dayDropdownMenuButton">
-                            <!-- Dropdown generated in onLoad() -->
-                        </ul>
-                    </div>
-                    <div class="col dropdown">
-                        <button class="btn dropdown-toggle" type="button" id="yearDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 3px;">
-                        Year
-                        </button>
-                        <ul id="yearDropdownList" class="dropdown-menu" style=" overflow-y:scroll; max-height: 50vh;" aria-labelledby="yearMenuButton">
-                            <!-- Dropdown generated in onLoad() -->
-                        </ul>
-                    </div>
-                    <div class="col">
-                        <button type="button" class="btn btn-primary" id="goToDateButton" disabled>Go</button>
-                    </div>
+            <div class="row">
+                <div class="col dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="seasonDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 3px;">
+                        Season
+                    </button>
+                    <ul id="seasonDropdownList" class="dropdown-menu" style=" overflow-y:scroll; max-height: 50vh;" aria-labelledby="seasonDropdownMenuButton">
+                        <li id="SpringDropdown"><a class="dropdown-item" >Spring</a></li>
+                        <li id="SummerDropdown"><a class="dropdown-item" >Summer</a></li>
+                        <li id="FallDropdown"><a class="dropdown-item" >Fall</a></li>
+                        <li id="WinterDropdown"><a class="dropdown-item" >Winter</a></li>
+                    </ul>
+                </div>
+                <div class="col dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="dayDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 3px;">
+                    Day
+                    </button>
+                    <ul id="dayDropdownList" class="dropdown-menu" style=" overflow-y:scroll; max-height: 50vh;" aria-labelledby="dayDropdownMenuButton">
+                        <!-- Dropdown generated in onLoad() -->
+                    </ul>
+                </div>
+                <div class="col dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="yearDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 3px;">
+                    Year
+                    </button>
+                    <ul id="yearDropdownList" class="dropdown-menu" style=" overflow-y:scroll; max-height: 50vh;" aria-labelledby="yearMenuButton">
+                        <!-- Dropdown generated in onLoad() -->
+                    </ul>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-primary" id="goToDateButton" disabled>Go</button>
                 </div>
             </div>
         </div>
-      </nav>
+    </nav>
+
+    <div class="bg-body py-3" style="margin-top:100px;">
+        <div class="container">
+            <h1 id="dateDisplay" style="text-align:center; white-space:nowrap; font-size:1.5em"></h1>
+        </div>
+    </div>
+
+    <div class="bg-body pb-3">
+        <div class="container">
+            <div class="row g-2 justify-content-center">
+                <div class="col-6 col-md-4">
+                    <button onclick="removeDay()" type="button" class="btn btn-dark btn-lg w-100" style="height:80px">&lt; Previous</button>
+                </div>
+                <div class="col-6 col-md-4">
+                    <button onclick="addDay()" type="button" class="btn btn-dark btn-lg w-100" style="height:80px">Next &gt;</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <br>
 
-    <div class="container"style="margin-top:100px">
+    <div class="container">
         <div id="festivalAlertBox">
             <!-- Festivals generated in updateFestivalText() -->
         </div>
     </div>
 
-    <div class="container" style=" margin-bottom: 160px;">
+    <div class="container">
+        <ul id="shopScheduleList" class="list-group">
+              <!-- List items generated in addShopToList() -->
+        </ul>
+    </div>
+
+    <div class="container">
         <ul id="npcScheduleList" class="list-group">
               <!-- List items generated in addNPCToList() -->
         </ul>
     </div>
 
-    <nav class="navbar fixed-bottom navbar-light bg-light">
-        <div class="container-fluid" style="justify-content: center;">
-            <div class="container">
-                <h1 id="dateDisplay" style="text-align:center; white-space:nowrap; font-size:1.5em"></h1>
-            </div>
-            <div class="row" style="width:100%">
-                <div class="col">
-                    <button onclick="removeDay()" type="button" class="btn btn-dark btn-lg" style="width:100%; height:80px">< Previous</button>
-                </div>
-                <div class="col">
-                    <button onclick="addDay()" type="button" class="btn btn-dark btn-lg" style="width:100%; height:80px">Next ></button>
-                </div>
-            </div>
-        </div>
-      </nav>
   </body>
 </html>
 

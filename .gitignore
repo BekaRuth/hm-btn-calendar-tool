@@ -1,0 +1,11 @@
+# Ignore these files/folders: 
+*
+
+# Except the following:
+!assets/
+!assets/**
+!lists/
+!lists/**
+!.gitignore
+!README.md
+!index.html

@@ -1,0 +1,449 @@
+{
+    "Ann": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>Sunny<ul><li>At the Inn (6:00AM to 7:00AM)</li><li>at the Hot Springs (7:30AM to 10:00AM)</li><li>at the Inn 2nd floor (10:30AM to 1:00PM)</li><li>at the Inn 1st floor (1:00PM to 4:00PM)</li><li>at the Inn 2nd floor (4:00PM to 7:00PM)</li><li>at the Inn 1st floor (7:00PM onwards)</li></ul></li><li>Rainy<ul><li>at the Inn (6:00AM to 7:00AM)</li><li>at the Inn back room (7:30AM to 10:00AM)</li><li>at the Inn 2nd floor (10:00AM to 1:00PM)</li><li>at the Inn 1st floor (1:00PM to 4:00PM)</li><li>at the Inn 2nd floor (4:00PM to 7:00PM)</li><li>at the Inn 1st floor (7:00PM onwards)</li></ul></li></ul>"
+            }
+        ],
+        "img": "assets/Ann.png"
+    },
+    "Anna": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>Sunny<ul><li>inside her home (6:00AM to 1:00PM)</li><li>at Rose Square (2:00PM to 4:00PM)</li><li>inside her home (5:00PM onwards)</li></ul></li><li>Rainy<ul><li>inside her home (all day)</li></ul></li></ul>"
+            },
+            {
+                "weekDays": "Monday",
+                "text": "<ul><li>Sunny<ul><li>inside her home (6:00AM to 7:00AM)</li><li>Mother's Hill flower field (8:30AM to 10:00AM)</li><li>inside her home (11:30AM to 1:00PM)</li><li>inside the Supermarket (1:30PM to 4:00PM)</li><li>inside her home (4:30PM onwards)</li></ul></li><li>Rainy<ul><li>inside her home (6:00AM to 1:00PM)</li><li>inside the Supermarket (1:30PM to 4:00PM)</li><li>inside her home (4:30PM onwards)</li></ul></li></ul>"
+            }
+        ],
+        "img": "assets/Anna.png"
+    },
+    "Aqua (Light Blue)": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>in Harvest Sprites' home (all day)</li></ul>"
+            }
+        ],
+        "img": "assets/Aqua (Light Blue).png"
+    },
+    "Barley": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>outside Yodel Ranch (6:00AM to 8:00AM)</li><li>inside Yodel Ranch (8:00AM onwards)</li></ul>"
+            },
+            {
+                "weekDays": "Monday",
+                "text": "<ul><li>Sunny<ul><li>outside Yodel Ranch (6:00AM to 8:00AM)</li><li>at the Mayor's house (8:50AM to 1:00PM)</li><li>at the Hot Springs (1:40PM to 4:10PM)</li><li>inside Yodel Ranch (4:50PM onwards)</li></ul></li><li>Rainy<ul><li>outside Yodel Ranch (6:00AM to 8:00AM)</li><li>at the Mayor's house (9:00AM to 1:00PM)</li><li>inside Yodel Ranch (1:40PM onwards)</li></ul></li></ul>"
+            }
+        ],
+        "img": "assets/Barley.png"
+    },
+    "Basil": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>inside his home 2nd floor (6:00AM to 10:00AM)</li><li>inside his home 1st floor (10:00AM to 1:00PM)</li><li>inside his home 2nd floor (1:00PM to 4:00PM)</li><li>inside his home 1st floor (4:00PM to 7:00PM)</li><li>at the Inn (7:30PM to 10:00PM)</li><li>inside his home (10:30PM onwards)</li></ul>"
+            },
+            {
+                "weekDays": "Monday",
+                "text": "<ul><li>Sunny<ul><li>inside his home (6:00AM to 7:00AM)</li><li>Mother's Hill flower field (8:30AM to 10:00AM)</li><li>inside his home (11:30AM to 7:00PM)</li><li>at the inn (7:30PM to 10:00PM)</li><li>inside his home (10:30PM onwards)</li></ul></li><li>Rainy<ul><li>inside his home (6:00AM to 7:00PM)</li><li>at the inn (7:30PM to 10:00PM)</li><li>inside his home (10:30PM onwards)</li></ul></li></ul>"
+            }
+        ],
+        "img": "assets/Basil.png"
+    },
+    "Bold (Purple)": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>in Harvest Sprites' home (all day)</li></ul>"
+            }
+        ],
+        "img": "assets/Bold (Purple).png"
+    },
+    "Chef (Red)": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>in Harvest Sprites' home (all day)</li></ul>"
+            }
+        ],
+        "img": "assets/Chef (Red).png"
+    },
+    "Cliff": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>inside the Inn (6:00AM to 9:00AM)</li><li>at the Church (9:40AM to 4:00PM)</li><li>inside the Inn (4:40PM onwards)</li></ul>"
+            }
+        ],
+        "img": "assets/Cliff.png"
+    },
+    "Cliff winery": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Wednesday, Thursday, Friday, Sunday",
+                "text": "<ul><li>upstairs inside the Inn (6:00AM to 10:00AM)</li><li>inside the Winery storehouse (10:50AM to 1:00PM)</li><li>outside the Winery (1:00PM to 4:00PM)</li><li>at the Church (4:40PM to 7:20PM)</li><li>at the Inn (8:10PM onwards)</li></ul>"
+            },
+            {
+                "weekDays": "Tuesday, Saturday",
+                "text": "<ul><li>upstairs inside the inn (6:00AM to 1:00PM)</li><li>downstairs inside the inn (1:00PM to 4:10PM)</li><li>inside the Church (4:50PM to 7:20PM)</li><li>at the Inn (8:10PM onwards)</li></ul>"
+            }
+        ],
+        "img": "assets/Cliff winery.png"
+    },
+    "Doctor Tim": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>inside the Clinic (all day)</li></ul>"
+            },
+            {
+                "weekDays": "Wednesday",
+                "text": "<ul><li>Sunny<ul><li>inside the Clinic (6:00AM to 7:00AM)</li><li>at Mother Lake (8:00AM to 10:00AM)</li><li>inside the Clinic (10:40AM to 1:10PM)</li><li>at the Library (2:00PM to 4:00PM)</li><li>inside the Clinic (4:50PM onwards)</li></ul></li><li>Rainy<ul><li>inside the Clinic (6:00AM to 7:00AM)</li><li>at the Church (7:50AM to 10:00AM)</li><li>inside the Clinic (10:40AM to 1:10PM)</li><li>at the Library (2:00PM to 4:00PM)</li><li>inside the Clinic (4:50PM onwards)</li></ul></li></ul>"
+            }
+        ],
+        "img": "assets/Doctor Tim.png"
+    },
+    "Doug": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>inside the Inn (all day)</li></ul>"
+            }
+        ],
+        "img": "assets/Doug.png"
+    },
+    "Duke": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Sunday",
+                "text": "<ul><li>inside the Winery (6:00AM to 1:10PM)</li><li>inside the Winery storehouse (1:10PM to 3:00PM)</li><li>outside of the Winery (3:00PM to 5:00PM)</li></ul>"
+            },
+            {
+                "weekDays": "Saturday",
+                "text": "<ul><li>inside the Winery (6:00AM to 1:10PM)</li><li>at the Inn (1:50PM to 4:00PM)</li><li>inside the Winery (4:40PM onwards)</li><li>at the Church (4:40PM to 7:00PM), after Cliff works at the Winery</li><li>inside the Winery (7:40PM onwards)</li></ul>"
+            }
+        ],
+        "img": "assets/Duke.png"
+    },
+    "Ellen": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>at her home (all day)</li></ul>"
+            }
+        ],
+        "img": "assets/Ellen.png"
+    },
+    "Elli": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>inside the Clinic (All day)</li></ul>"
+            },
+            {
+                "weekDays": "Wednesday",
+                "text": "<ul><li>inside the Clinic (6:00AM to 9:00AM)</li><li>at Ellen's house (9:45AM to 1:00PM)</li><li>inside the Supermarket (1:40PM to 4:00PM)</li><li>at Ellen's house (4:45 to 7:10PM)</li><li>inside the Clinic (7:55PM onwards)</li></ul>"
+            }
+        ],
+        "img": "assets/Elli.png"
+    },
+    "Gotz": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday",
+                "text": "<ul><li>inside his house (6:00AM to 7:00AM)</li><li>at Mother Lake (8:00AM to 10:00AM)</li><li>inside his house (10:40AM onwards; some days he will go outside from 1:00PM to 3:00PM)</li></ul>"
+            },
+            {
+                "weekDays": "Saturday",
+                "text": "<ul><li>inside his house (6:00AM to 7:00AM)</li><li>at the Mother Hill flower garden (8:00AM to 10:10AM)</li><li>inside the Mayor's house (10:40AM to 1:00PM)</li><li>inside the Supermarket (1:40PM to 4:00PM)</li><li>inside his house (4:40PM onwards)</li></ul>"
+            },
+            {
+                "weekDays": "Sunday",
+                "text": "<ul><li>inside his house (6:00AM to 1:00PM)</li><li>at the peak of Mother Hill (1:40PM to 4:10PM)</li><li>inside his house (4:50PM onwards)</li></ul>"
+            }
+        ],
+        "img": "assets/Gotz.png"
+    },
+    "Gray": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Friday, Saturday, Sunday",
+                "text": "<ul><li>inside the inn (6:00AM to 7:00AM)</li><li>inside the blacksmithy (7:50AM to 1:00PM)</li><li>at the library (1:40PM to 4:00PM)</li><li>inside the inn (4:50PM onwards)</li></ul>"
+            },
+            {
+                "weekDays": "Thursday",
+                "text": "<ul><li>Sunny<ul><li>inside the inn (6:00AM to 7:00AM)</li><li>at the peak of Mother Hill (8:00AM to 10:00AM)</li><li>inside the blacksmithy (10:30AM to 1:00PM)</li><li>at the library (1:30PM to 4:00PM)</li><li>inside the inn (4:50PM onwards)</li></ul></li><li>Rainy<ul><li>inside the inn (6:00AM to 10:00AM)</li><li>inside the blacksmithy (10:40AM to 1:00PM)</li><li>at the library (1:40PM to 4:00PM)</li><li>inside the inn (4:50PM onwards)</li></ul></li></ul>"
+            }
+        ],
+        "img": "assets/Gray.png"
+    },
+    "Greg": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday",
+                "text": "<ul><li>inside Zack's house (all day)</li></ul>"
+            },
+            {
+                "weekDays": "Friday, Saturday, Sunday",
+                "text": "<ul><li>on the pier (7:00AM to 10:00AM)</li><li>inside Zack's house (10:00AM to 7:00PM)</li><li>on the pier (7:00PM to 10:00PM)</li><li>inside Zack's house (10:00PM onwards)</li></ul>"
+            }
+        ],
+        "img": "assets/Greg.png"
+    },
+    "Harris": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>inside his home (6:00AM to 7:00AM)</li><li>at Yodel Ranch (8:30AM to 9:00AM)</li><li>at Gotz' house (10:00AM to 1:00PM)</li><li>at the Inn (2:00PM to 4:00PM)</li><li>inside his home (4:30PM to 7:00PM)</li><li>outside his home (7:00PM to 10:00PM)</li><li>inside his home (10:00PM onwards)</li></ul>"
+            }
+        ],
+        "img": "assets/Harris.png"
+    },
+    "Hoggy (Yellow)": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>in Harvest Sprites' home (all day)</li></ul>"
+            }
+        ],
+        "img": "assets/Hoggy (Yellow).png"
+    },
+    "Jeff": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>Sunny<ul><li>inside the Supermarket house section (6:00AM to 1:00PM)</li><li>in Rose Square (1:30PM to 4:00PM)</li><li>inside the Supermarket house section (4:45PM onwards)</li></ul></li><li>Rainy<ul><li>inside the Supermarket (all day)</li></ul></li></ul>"
+            },
+            {
+                "weekDays": "Tuesday",
+                "text": "<ul><li>inside the Supermarket (6:00AM to 7:00AM)</li><li>at Yodel Ranch (8:00AM to 10:00AM)</li><li>at Chicken Lil's (10:50AM to 1:00PM)</li><li>at Ellen's house (1:50PM to 4:00PM)</li><li>inside the Supermarket (4:40PM onwards)</li></ul>"
+            }
+        ],
+        "img": "assets/Jeff.png"
+    },
+    "Kai": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>inside his shop (6:00AM to 8:00AM)</li><li>outside his shop (8:00AM to 11:30AM)</li><li>inside his shop (11:30AM to 1:00PM)</li><li>outside his shop (1:00PM to 5:00PM)</li><li>inside his shop (5:00PM onwards)</li></ul>"
+            }
+        ],
+        "img": "assets/Kai.png"
+    },
+    "Kano": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>inside the mayor's house (6:00AM to 7:00PM)</li><li>inside the Inn (7:40PM to 10:10PM)</li><li>inside the mayor's house (10:50PM onwards)</li></ul>"
+            }
+        ],
+        "img": "assets/Kano.png"
+    },
+    "Karen": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Wednesday, Thursday, Friday, Saturday",
+                "text": "<ul><li>Sunny<ul><li>inside the Supermarket (6:00AM to 8:00AM)</li><li>outside the Supermarket (8:00AM to 10:30AM)</li><li>inside the Supermarket house section (10:30AM to 1:00PM)</li><li>inside the Supermarket store section (1:00PM to 4:00PM)</li><li>inside the Supermarket house section (4:00PM to 7:00PM)</li><li>on the beach (7:30PM to 10:00PM)</li><li>inside the Supermarket (10:50PM onwards)</li></ul></li><li>Rainy<ul><li>inside the Supermarket house section (6:00AM to 8:00AM)</li><li>inside the Supermarket (8:00AM to 10:00AM)</li><li>inside the Supermarket house section (10:00AM to 1:00PM)</li><li>inside the Supermarket (1:00PM to 4:00PM)</li><li>inside the Supermarket house section (4:00PM onwards)</li></ul></li></ul>"
+            },
+            {
+                "weekDays": "Tuesday",
+                "text": "<ul><li>Sunny<ul><li>inside the Supermarket (6:00AM to 8:00AM)</li><li>outside the Supermarket (8:00AM to 10:30AM)</li><li>inside the Supermarket (10:00AM to 1:00PM)</li><li>at the Hot Springs (2:00PM to 4:00PM)</li><li>inside the Supermarket (5:00PM to 7:00PM)</li><li>at the Inn (7:30PM to 10:00PM)</li><li>inside the Supermarket (10:30PM onwards)</li></ul></li><li>Rainy<ul><li>inside the Supermarket (6:00AM to 1:00PM)</li><li>inside Gotz' house (2:00PM to 4:00PM)</li><li>inside the Supermarket (5:00PM to 7:00PM)</li><li>at the Inn (7:30PM to 10:00PM)</li><li>inside the Supermarket (10:30PM onwards)</li></ul></li></ul>"
+            },
+            {
+                "weekDays": "Sunday",
+                "text": "<ul><li>inside the Supermarket (6:00AM to 7:00PM)</li><li>at the Inn (7:00PM to 10:00PM)</li><li>inside the Supermarket (10:30PM onwards)</li></ul>"
+            }
+        ],
+        "img": "assets/Karen.png"
+    },
+    "Lillia": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday",
+                "text": "<ul><li>inside Chicken Lil's (all day)</li></ul>"
+            },
+            {
+                "weekDays": "Sunday",
+                "text": "<ul><li>inside Chicken Lil's (6:00AM to 1:00PM)</li><li>inside the Clinic (1:30PM to 4:00PM)</li><li>inside Chicken Lil's (4:50PM onwards)</li></ul>"
+            }
+        ],
+        "img": "assets/Lillia.png"
+    },
+    "Louis": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Sunday",
+                "text": "<ul><li>inside Gotz' house (all day)</li></ul>"
+            },
+            {
+                "weekDays": "Saturday",
+                "text": "<ul><li>inside Gotz' house (6:00AM to 7:00AM)</li><li>at the Mother Hill flower garden (8:00AM to 10:00AM)</li><li>inside Gotz' house (10:40AM onwards)</li></ul>"
+            }
+        ],
+        "img": "assets/Louis.png"
+    },
+    "Manna": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Sunday",
+                "text": "<ul><li>inside the Winery (6:00AM to 1:00PM)</li><li>at Rose Square (1:40PM to 4:00PM)</li><li>inside the Winery (4:50PM onwards)</li></ul>"
+            },
+            {
+                "weekDays": "Saturday",
+                "text": "<ul><li>inside the Winery (6:00AM to 10:00AM)</li><li>at Anna's house (10:40AM to 1:00PM)</li><li>at the Square (1:40PM to 4:00PM)</li><li>at the Inn (1:40PM to 4:00PM), after Cliff works at the Winery</li><li>inside the Winery (4:50PM onwards)</li><li>at the Church (4:40PM to 7:00PM), after Cliff works at the Winery</li><li>inside the Winery (7:40PM onwards)</li></ul>"
+            }
+        ],
+        "img": "assets/Manna.png"
+    },
+    "Mary": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>in her house (6:00AM to 10:00AM)</li><li>in the library (10:00AM to 4:00PM)</li><li>in her house (4:00PM onwards)</li></ul>"
+            },
+            {
+                "weekDays": "Monday - In her house (6:00AM to 7:00AM)",
+                "text": "<ul><li>Sunny<ul><li>on Mother Hill (8:00AM to 10:00AM)</li><li>in her house (11:00AM to 1:00PM)</li><li>at the Supermarket (1:40PM to 4:00PM)</li><li>in her house (4:50PM onwards)</li></ul></li><li>Rainy<ul><li>in her house (6:00AM to 1:00PM)</li><li>at the Supermarket (1:40PM to 4:00PM)</li><li>in her house (4:50PM onwards)</li></ul></li></ul>"
+            }
+        ],
+        "img": "assets/Mary.png"
+    },
+    "May": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>Sunny<ul><li>inside Yodel Ranch (6:00AM to 7:00AM)</li><li>outside Yodel Ranch (7:00AM to 11:00AM)</li><li>inside Yodel Ranch (11:00AM to 1:00PM)</li><li>outside Yodel Ranch (1:00PM to 4:00PM)</li><li>after May and Stu event, outside the Church (1:00PM to 4:00PM), on sunny days except Monday and Wednesday</li><li>inside Yodel Ranch (4:00PM onwards)</li></ul></li><li>Rainy<ul><li>inside Yodel Ranch (all day)</li></ul></li></ul>"
+            },
+            {
+                "weekDays": "Monday",
+                "text": "<ul><li>Sunny<ul><li>inside Yodel Ranch (6:00AM to 7:00AM)</li><li>outside Yodel Ranch (7:00AM to 11:00AM)</li><li>inside Yodel Ranch (11:00AM to 1:00PM)</li><li>at the Hot Springs (1:40PM to 4:00PM)</li><li>inside Yodel Ranch (4:40PM onwards)</li></ul></li><li>Rainy<ul><li>inside Yodel Ranch (all day)</li></ul></li></ul>"
+            }
+        ],
+        "img": "assets/May.png"
+    },
+    "Mayor Thomas": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday",
+                "text": "<ul><li>inside his house (all day)</li></ul>"
+            },
+            {
+                "weekDays": "Saturday",
+                "text": "<ul><li>Sunny<ul><li>inside his house (6:00AM to 7:00AM)</li><li>inside the Supermarket (7:40AM to 10:00AM)</li><li>inside Ellen's house (10:40AM to 1:00PM)</li><li>at Rose Square (1:30PM to 4:00PM)</li><li>inside his house (4:50PM onwards)</li></ul></li><li>Rainy<ul><li>inside his house (6:00AM to 7:00AM)</li><li>inside the Supermarket (7:40AM to 10:00AM)</li><li>inside Ellen's house (10:40AM to 1:00PM)</li><li>inside his house (1:10PM onwards)</li></ul></li></ul>"
+            },
+            {
+                "weekDays": "Sunday",
+                "text": "<ul><li>Sunny<ul><li>inside his house (6:00AM to 10:00AM)</li><li>inside Ellen's House (10:10AM to 1:00PM)</li><li>at Rose Square (1:30PM to 4:00PM)</li><li>inside his house (4:50PM onwards)</li></ul></li><li>Rainy<ul><li>inside his house (6:00AM to 10:00AM)</li><li>inside Ellen's House (10:10AM to 1:00PM)</li><li>inside his house (1:10PM onwards)</li></ul></li></ul>"
+            }
+        ],
+        "img": "assets/Mayor Thomas.png"
+    },
+    "Nappy (Orange)": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>in Harvest Sprites' home (all day)</li></ul>"
+            }
+        ],
+        "img": "assets/Nappy (Orange).png"
+    },
+    "Pastor Carter": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>outside of the Church (6:00AM to 9:00AM)</li><li>inside of the Church (9:00AM to 1:00PM)</li><li>inside the confessionals (1:00PM to 4:00PM)</li><li>after May and Stu event, outside the Church (1:00PM to 4:00PM), on sunny days except Monday and Wednesday</li><li>inside of the Church (4:00PM onwards)</li></ul>"
+            }
+        ],
+        "img": "assets/Pastor Carter.png"
+    },
+    "Popuri": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday",
+                "text": "<ul><li>Sunny<ul><li>inside Chicken Lil's (6:00AM to 7:00AM)</li><li>at the Hot Springs (7:45AM to 10:00AM)</li><li>inside Chicken Lil's (10:45AM onwards)</li></ul></li><li>Rainy<ul><li>inside Chicken Lil's (All day)</li></ul></li></ul>"
+            },
+            {
+                "weekDays": "Sunday",
+                "text": "<ul><li>Sunny<ul><li>inside Chicken Lil's (6:00AM to 9:00AM)</li><li>at church (9:30AM to 1:00PM)</li><li>at the town square (1:30PM to 5:30PM)</li><li>inside Chicken Lil's (6:00PM onwards)</li></ul></li><li>Rainy<ul><li>inside Chicken Lil's (6:00AM to 9:00AM)</li><li>at the Church (9:30AM to 1:00PM)</li><li>inside Chicken Lil's (1:30PM onwards)</li></ul></li></ul>"
+            }
+        ],
+        "img": "assets/Popuri.png"
+    },
+    "Rick": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>Sunny<ul><li>outside Chicken Lil's (6:00AM to 7:00AM)</li><li>outside the Supermarket (7:30AM to 10:00AM)</li><li>inside Chicken Lil's (10:30AM to 1:00PM)</li><li>outside Chicken Lil's (1:00PM to 4:00PM)</li><li>inside Chicken Lil's (4:00PM onwards)</li></ul></li><li>Rainy<ul><li>outside Chicken Lil's (6:00AM to 7:00AM)</li><li>inside Chicken Lil's (7:00AM to 1:00PM)</li><li>outside Chicken Lil's (1:00PM to 4:00PM)</li><li>inside Chicken Lil's (4:00PM onwards)</li></ul></li></ul>"
+            },
+            {
+                "weekDays": "Tuesday",
+                "text": "<ul><li>Sunny<ul><li>outside Chicken Lil's (6:00AM to 7:00AM)</li><li>in the Square (7:40AM to 10:00AM)</li><li>inside Chicken Lil's (10:50AM to 1:00PM)</li><li>inside the blacksmithy (1:40PM to 4:00PM)</li><li>inside Chicken Lil's (4:40PM onwards)</li></ul></li><li>Rainy<ul><li>outside Chicken Lil's (6:00AM to 7:00AM)</li><li>inside Chicken Lil's (7:00AM to 1:00PM)</li><li>inside the blacksmithy (1:40PM to 4:00PM)</li><li>inside Chicken Lil's (4:40PM onwards)</li></ul></li></ul>"
+            }
+        ],
+        "img": "assets/Rick.png"
+    },
+    "Saibara": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Friday, Saturday, Sunday",
+                "text": "<ul><li>inside the blacksmithy (all day)</li></ul>"
+            },
+            {
+                "weekDays": "Thursday",
+                "text": "<ul><li>Sunny<ul><li>locked inside the blacksmithy (6:00AM to 7:00AM)</li><li>at the peak of Mother Hill (8:00AM to 10:00AM)</li><li>inside the blacksmithy (10:30AM to 1:00PM)</li><li>inside the supermarket (1:50PM to 4:00PM)</li><li>locked inside the blacksmithy (4:55PM onwards)</li></ul></li><li>Rainy<ul><li>locked inside the blacksmithy (6:00AM to 10:00AM)</li><li>inside the blacksmithy (10:00AM to 6:00PM)</li><li>locked inside the blacksmithy (6:00PM onwards)</li></ul></li></ul>"
+            }
+        ],
+        "img": "assets/Saibara.png"
+    },
+    "Staid (Blue)": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>in Harvest Sprites' home (all day)</li></ul>"
+            }
+        ],
+        "img": "assets/Staid (Blue).png"
+    },
+    "Stu": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>Sunny<ul><li>inside his house (6:00AM to 1:00PM)</li><li>outside his house (1:00PM to 4:00PM)</li><li>after May and Stu event, outside the Church (1:00PM to 4:00PM), on sunny days except Monday and Wednesday</li><li>inside his house (4:00PM onwards)</li></ul></li><li>Rainy<ul><li>inside his house (all day)</li></ul></li></ul>"
+            }
+        ],
+        "img": "assets/Stu.png"
+    },
+    "Timid (Green)": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>in Harvest Sprites' home (all day)</li></ul>"
+            }
+        ],
+        "img": "assets/Timid (Green).png"
+    },
+    "Won": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>nowhere at all (6:00AM to 1:00PM)</li><li>at the Inn (1:00PM to 4:00PM)</li><li>nowhere at all (4:00PM onwards)</li></ul>"
+            }
+        ],
+        "img": "assets/Won.png"
+    },
+    "Zack": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>inside his house (6:00AM to 7:00AM)</li><li>inside the Supermarket (7:40AM to 10:00AM)</li><li>inside his house (10:40AM to 4:00PM*)</li><li>at your farm (4:50PM to 5:50PM)</li><li>inside his house (7:50PM onwards)</li></ul>"
+            }
+        ],
+        "img": "assets/Zack.png"
+    }
+}

@@ -1,0 +1,138 @@
+{
+    "Saibara Blacksmith": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Friday, Saturday, Sunday",
+                "text": "<ul><li>Open: 9:00AM - 4:00PM</li></ul>"
+            },
+            {
+                "weekDays": "Thursday",
+                "text": "<ul><li>Closed</li></ul>"
+            }
+        ]
+    },
+    "Aja Winery": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Sunday",
+                "text": "<ul><li>Open: 9:00AM - 12:00PM</li></ul>"
+            },
+            {
+                "weekDays": "Saturday",
+                "text": "<ul><li>Closed</li></ul>"
+            }
+        ]
+    },
+    "Library": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>Open: 10:00AM - 4:00PM</li></ul>"
+            },
+            {
+                "weekDays": "Monday",
+                "text": "<ul><li>Closed</li></ul>"
+            }
+        ]
+    },
+    "Chicken Lil": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday",
+                "text": "<ul><li>Open: 11:00AM - 4:00PM</li></ul>"
+            },
+            {
+                "weekDays": "Sunday",
+                "text": "<ul><li>Closed</li></ul>"
+            }
+        ]
+    },
+    "Yodel Ranch": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>Open: 9:00AM - 3:00PM</li></ul>"
+            },
+            {
+                "weekDays": "Monday",
+                "text": "<ul><li>Closed</li></ul>"
+            }
+        ]
+    },
+    "Gotz House": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday",
+                "text": "<ul><li>Open: 11:00AM - 5:00PM</li></ul>"
+            },
+            {
+                "weekDays": "Saturday, Sunday",
+                "text": "<ul><li>Closed</li></ul>"
+            }
+        ]
+    },
+    "Supermarket": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Wednesday, Thursday, Friday, Saturday",
+                "text": "<ul><li>Open: 9:00AM - 6:00PM</li></ul>"
+            },
+            {
+                "weekDays": "Tuesday, Sunday",
+                "text": "<ul><li>Closed</li></ul>"
+            }
+        ]
+    },
+    "Clinic": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>Open: 09:00AM - 6:00PM</li></ul>"
+            },
+            {
+                "weekDays": "Wednesday",
+                "text": "<ul><li>Closed</li></ul>"
+            }
+        ]
+    },
+    "Seaside Lodge": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>Open: 8:00AM - 11:30PM, 1:00PM - 5:00PM</li></ul>"
+            }
+        ]
+    },
+    "Inn": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>Open: 8:00AM - 9:00PM</li></ul>"
+            }
+        ]
+    },
+    "Won Seed Corner": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>Open: 1:00PM - 4:00PM</li></ul>"
+            }
+        ]
+    },
+    "Church": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>Open: 10:00AM - 5:00PM</li></ul>"
+            }
+        ]
+    },
+    "Harvest Sprites": {
+        "schedule_blocks": [
+            {
+                "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+                "text": "<ul><li>Open: 10:00AM - 5:00PM</li></ul>"
+            }
+        ]
+    }
+}

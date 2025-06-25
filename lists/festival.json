@@ -1,0 +1,92 @@
+{
+  "New Year's Party": {
+    "season": "Spring",
+    "day": 1,
+    "text": "6:00PM - 7:50PM, Square or Inn, Go to either the Square or the Inn, +5 affection with anybody you talk to during the festival (+500 for any girl; only once in both cases); no effects otherwise (not even when you choose your dance partner)"
+  },
+  "Goddess Festival": {
+    "season": "Spring",
+    "day": 8,
+    "text": "10:00AM - 2:50PM, Square, Attend, and ask the mayor to start the dance; you can also ask any girl with at least 15000 affection for you to come with you on the 7th, +5 affection with anybody you talk to during the festival (+500 for any girl; once only for both cases); +3000 if you took a girl and agree to go with her to her to her favorite location, +1000 if you just go home"
+  },
+  "Spring Thanksgiving": {
+    "season": "Spring",
+    "day": 14,
+    "text": "N/A - 5:00PM, N/A, Give gifts to the girls, +1000 affection with any girl that you give cookies to (first time only)"
+  },
+  "Local Horse Race": {
+    "season": "Spring",
+    "day": 18,
+    "text": "10:00AM - 2:50PM, Square, Attend and watch all 3 races; participate if your horse is fully grown, if you wish, +5 affection with anybody you talk to during the festival (+500 for any girl; only once per race for both cases, though you can get up to 15 and 1500 per villager and girl, respectively); +20 for everybody present at the race (+500 for each girl present) if you participate and win"
+  },
+  "Cooking Festival": {
+    "season": "Spring",
+    "day": 22,
+    "text": "10:00AM - 2:50PM, Square, Attend; bring a dish if you want to try and win, +5 affection with anybody you talk to during the festival (+500 for any girl; only once before and after the judging for both cases); +20 for everybody present at the festival (+500 for each girl present) if you win the contest"
+  },
+  "Opening Day": {
+    "season": "Summer",
+    "day": 1,
+    "text": "10:00AM - 2:50PM, Mineral Beach, Attend, and swim in the race, +5 affection with anybody you talk to during the festival (+500 for any girl; only once before and after the race for both cases); +20 for everybody present at the race (+500 for each girl present) if you win, plus you get a Power Berry the first time you win"
+  },
+  "Sumo Chicken Festival": {
+    "season": "Summer",
+    "day": 7,
+    "text": "10:00AM - 2:50PM, Square, Attend; if you have a chicken, you can compete, +5 affection with anybody you talk to during the festival (no girls show up for this one; only once before and after the fights); +20 for everybody present at the fights if you win, plus your competing hen will get a gold crown next to its name and produce Golden Eggs from then on"
+  },
+  "Tomato Festival": {
+    "season": "Summer",
+    "day": 12,
+    "text": "10:00AM - 2:50PM, Square, Attend, and join a team, +5 affection with anybody you talk to during the festival (+500 for any girl; only once before and after the fights for both cases); +20 for everybody present at the fights (+500 for the girls) if your team wins"
+  },
+  "Cow Festival": {
+    "season": "Summer",
+    "day": 20,
+    "text": "10:00AM - 2:50PM, Yodel Ranch, Attend; if you have a mature cow, you can enter it on the 19th, +5 affection with anybody you talk to during the festival (+500 for any girl; only once before or after the judging in both cases); +20 for everybody present at the festival (+500 for the girls) if your cow wins, that cow will also have a crown by its name and produce Milk G"
+  },
+  "Fireworks Display": {
+    "season": "Summer",
+    "day": 24,
+    "text": "6:00PM - 7:50PM, Mineral Beach, Attend; you can watch it with a girl you like, or Kai if he asks you to, +5 affection with anybody you talk to during the festival (+500 for any girl; only once before and after the fireworks in both cases); no effects otherwise"
+  },
+  "Music Festival": {
+    "season": "Fall",
+    "day": 3,
+    "text": "6:00PM - 6:50PM, Church, Attend; if you agreed to play the ocarina on the 2nd, then you'll do just that, No affection changes if you accept or refuse to participate; +5 affection with anybody you talk to during the festival (+500 for any girl; only once in both cases); no effects otherwise"
+  },
+  "Harvest Festival": {
+    "season": "Fall",
+    "day": 9,
+    "text": "10:00AM - 2:50PM, Square, Attend, and bring something to add to the hot pot, +5 affection with anybody you talk to during the festival (+500 for any girl; only once before or after the soup in both cases); No effects otherwise (it really doesn't matter what you put in the soup)"
+  },
+  "Moon-Viewing Day": {
+    "season": "Fall",
+    "day": 13,
+    "text": "6:00PM - 11:50PM, Mother Hill peak, Go to the peak and spend time with the girl who likes you most, Oddly enough, there are no effects"
+  },
+  "Sheep Festival": {
+    "season": "Fall",
+    "day": 21,
+    "text": "10:00AM - 2:50PM, Yodel Ranch, Attend; if you have an unshorn sheep, you can enter it on the 20th, +5 affection with anybody you talk to during the festival (+500 for any girl; only once before or after the festival in both cases); +20 for everybody present at the festival (+500 for the girls) if your sheep wins, that sheep will also have a crown by its name and produce Wool G"
+  },
+  "Dog Race": {
+    "season": "Winter",
+    "day": 10,
+    "text": "10:00AM - 2:50PM, Square, Attend; if you let your dog enter the race, you can participate, +5 affection with anybody you talk to during the festival (+500 for any girl; only once before and after the race in both cases); +20 for everybody present at the festival (+500 for the girls) if your dog wins"
+  },
+  "Winter Thanksgiving": {
+    "season": "Winter",
+    "day": 14,
+    "text": "See Below - See Below, Your farm, Hang around outside your house at 6:00AM, 8:00AM, 10:00AM, 1:00PM, and 3:00PM, If a girl has at least a purple-heart relationship with you, she will stop by to give you a chocolate item.  For purple- and blue-heart relationships, you get Chocolate.  For green-heart and above relationships, you get Chocolate Cake.  No effect on relationships."
+  },
+  "Star Night Festival": {
+    "season": "Winter",
+    "day": 24,
+    "text": "6:00PM - 7:50PM, Varies, Talk a girl on the 23rd, and she might invite you to come over for dinner with her family (if your relationship is good enough); if you're married, then this event will happen automatically at home, Surprisingly, no effects whatsoever, not even when you're married"
+  },
+  "New Year's Eve": {
+    "season": "Winter",
+    "day": 30,
+    "text": "12:00AM - 4:50AM, Mother Hill peak, Attend, +5 affection with anybody you talk to during the festival (+500 for any girl; only once in both cases)"
+  }
+}
