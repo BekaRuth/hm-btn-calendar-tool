@@ -21,7 +21,7 @@
         ],
         "img": "assets/Anna.png"
     },
-    "Aqua (Light Blue)": {
+    "Aqua-LightBlue": {
         "schedule_blocks": [
             {
                 "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -56,7 +56,7 @@
         ],
         "img": "assets/Basil.png"
     },
-    "Bold (Purple)": {
+    "Bold-Purple": {
         "schedule_blocks": [
             {
                 "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -65,7 +65,7 @@
         ],
         "img": "assets/Bold (Purple).png"
     },
-    "Chef (Red)": {
+    "Chef-Red": {
         "schedule_blocks": [
             {
                 "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -83,7 +83,7 @@
         ],
         "img": "assets/Cliff.png"
     },
-    "Cliff winery": {
+    "CliffWinery": {
         "schedule_blocks": [
             {
                 "weekDays": "Monday, Wednesday, Thursday, Friday, Sunday",
@@ -96,7 +96,7 @@
         ],
         "img": "assets/Cliff winery.png"
     },
-    "Doctor Tim": {
+    "DoctorTim": {
         "schedule_blocks": [
             {
                 "weekDays": "Monday, Tuesday, Thursday, Friday, Saturday, Sunday",
@@ -205,7 +205,7 @@
         ],
         "img": "assets/Harris.png"
     },
-    "Hoggy (Yellow)": {
+    "Hoggy-Yellow": {
         "schedule_blocks": [
             {
                 "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -327,7 +327,7 @@
         ],
         "img": "assets/May.png"
     },
-    "Mayor Thomas": {
+    "MayorThomas": {
         "schedule_blocks": [
             {
                 "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday",
@@ -344,7 +344,7 @@
         ],
         "img": "assets/Mayor Thomas.png"
     },
-    "Nappy (Orange)": {
+    "Nappy-Orange": {
         "schedule_blocks": [
             {
                 "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -353,7 +353,7 @@
         ],
         "img": "assets/Nappy (Orange).png"
     },
-    "Pastor Carter": {
+    "PastorCarter": {
         "schedule_blocks": [
             {
                 "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -401,7 +401,7 @@
         ],
         "img": "assets/Saibara.png"
     },
-    "Staid (Blue)": {
+    "Staid-Blue": {
         "schedule_blocks": [
             {
                 "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -419,7 +419,7 @@
         ],
         "img": "assets/Stu.png"
     },
-    "Timid (Green)": {
+    "Timid-Green": {
         "schedule_blocks": [
             {
                 "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
