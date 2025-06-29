@@ -21,11 +21,14 @@
         var yearsForDropdown = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
         var trackedNPCs = [];
-        var npcList = ["Ann","Anna","Aqua (Light Blue)","Barley","Basil","Bold (Purple)","Chef (Red)","Cliff","Doctor Tim","Doug","Duke","Ellen","Elli","Gotz","Gray","Greg","Harris","Hoggy (Yellow)","Jeff","Kai","Kano","Karen","Lillia","Louis","Manna","Mary","May","Mayor Thomas","Nappy (Orange)","Pastor Carter","Popuri","Rick","Saibara","Staid (Blue)","Stu","Timid (Green)","Won","Zack"].sort();
+        var npcList = ["Ann","Anna","Aqua-LightBlue","Barley","Basil","Bold-Purple","Chef-Red","Cliff","DoctorTim","Doug","Duke",
+            "Ellen","Elli","Gotz","Gray","Greg","Harris","Hoggy-Yellow","Jeff","Kai","Kano","Karen","Lillia","Louis","Manna","Mary","May",
+            "MayorThomas","Nappy-Orange","PastorCarter","Popuri","Rick","Saibara","Staid-Blue","Stu","Timid-Green","Won","Zack"].sort();
         var npcInfo = getNPCS();
 
         var trackedShops = [];
-        var shopList = ["Saibara Blacksmith", "Aja Winery", "Library", "Chicken Lil", "Yodel Ranch", "Gotz House", "Supermarket", "Clinic", "Seaside Lodge", "Inn", "Won Seed Corner", "Church", "Harvest Sprites"].sort();
+        var shopList = ["SaibaraBlacksmith", "AjaWinery", "Library", "ChickenLil", "YodelRanch", "GotzHouse", "Supermarket", "Clinic",
+            "SeasideLodge", "Inn", "WonSeedCorner", "Church", "HarvestSprites"].sort();
         var shopInfo = getShops();
 
         var festivalInfo = getFestivalsAndBirthdays();
@@ -148,10 +151,12 @@
         function updateScheduleText() {
             $("#npcScheduleList li").remove();
             $("#shopScheduleList li").remove();
+
             for (var i = 0; i < trackedNPCs.length; i++) {
-                var npcScheduleText = getSchedule(trackedNPCs[i]);
+                //var npcScheduleText = getSchedule(trackedNPCs[i]);
                 addNPCToList(trackedNPCs[i], false);
             }
+
             for (var i = 0; i < trackedShops.length; i++) {
                 addShopToList(trackedShops[i], false);
             }
@@ -302,18 +307,31 @@
                 }
         }
 
-        //Returns text of single schedule block for an npc. Checks for specific seasonal or day requirements.
+        // Returns text of single schedule block for an npc. Checks for specific seasonal or day requirements.
         function getSchedule(name) {
 
             var npcData = npcInfo[name];
             var scheduleString = "Unavailable";
 
             for(var i = 0; i < npcData.schedule_blocks.length; i++) {
+                var dataTest = npcData.schedule_blocks[i];
                 if(npcData.schedule_blocks[i].weekDays.includes(dayOfWeek)) {
                     if(npcData.schedule_blocks[i].hasOwnProperty("seasons")) {
                         if(npcData.schedule_blocks[i].seasons.includes(currentSeason)) {
                             if(npcData.schedule_blocks[i].hasOwnProperty("days")){
-                                if(npcData.schedule_blocks[i].days.includes(dateNumber)) {
+
+                                var daysArray = npcData.schedule_blocks[i].days.trim();
+                                daysArray = daysArray.replaceAll(" ","");
+                                daysArray = daysArray.split(',');
+                                var isInArray = false;
+
+                                for (var j = 0; j < daysArray.length; j++) {
+                                    if(daysArray[j] == dateNumber) {
+                                        isInArray = true;
+                                    }
+                                }
+
+                                if(isInArray) {
                                     scheduleString = npcData.schedule_blocks[i].text; //Seasonal and specific day of month.
                                 }
                             }
@@ -351,7 +369,6 @@
         function getImage(name) {
             var npcData = npcInfo[name];
             return npcData.img;
-
         }
 
         function addNPCToList(npcName, pushToTrackedNPCs) {
@@ -424,7 +441,7 @@
                     ],
                     "img": "assets/Anna.png"
                 },
-                "Aqua (Light Blue)": {
+                "Aqua-LightBlue": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -459,7 +476,7 @@
                     ],
                     "img": "assets/Basil.png"
                 },
-                "Bold (Purple)": {
+                "Bold-Purple": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -468,7 +485,7 @@
                     ],
                     "img": "assets/Bold (Purple).png"
                 },
-                "Chef (Red)": {
+                "Chef-Red": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -486,7 +503,7 @@
                     ],
                     "img": "assets/Cliff.png"
                 },
-                "Cliff winery": {
+                "CliffWinery": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Monday, Wednesday, Thursday, Friday, Sunday",
@@ -499,7 +516,7 @@
                     ],
                     "img": "assets/Cliff winery.png"
                 },
-                "Doctor Tim": {
+                "DoctorTim": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Monday, Tuesday, Thursday, Friday, Saturday, Sunday",
@@ -608,7 +625,7 @@
                     ],
                     "img": "assets/Harris.png"
                 },
-                "Hoggy (Yellow)": {
+                "Hoggy-Yellow": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -730,7 +747,7 @@
                     ],
                     "img": "assets/May.png"
                 },
-                "Mayor Thomas": {
+                "MayorThomas": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday",
@@ -747,7 +764,7 @@
                     ],
                     "img": "assets/Mayor Thomas.png"
                 },
-                "Nappy (Orange)": {
+                "Nappy-Orange": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -756,7 +773,7 @@
                     ],
                     "img": "assets/Nappy (Orange).png"
                 },
-                "Pastor Carter": {
+                "PastorCarter": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -804,7 +821,7 @@
                     ],
                     "img": "assets/Saibara.png"
                 },
-                "Staid (Blue)": {
+                "Staid-Blue": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -822,7 +839,7 @@
                     ],
                     "img": "assets/Stu.png"
                 },
-                "Timid (Green)": {
+                "Timid-Green": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -856,7 +873,7 @@
         //Start Shops Data
         function getShops() {
             return {
-                "Saibara Blacksmith": {
+                "SaibaraBlacksmith": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Monday, Tuesday, Wednesday, Friday, Saturday, Sunday",
@@ -868,7 +885,7 @@
                         }
                     ]
                 },
-                "Aja Winery": {
+                "AjaWinery": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Sunday",
@@ -892,7 +909,7 @@
                         }
                     ]
                 },
-                "Chicken Lil": {
+                "ChickenLil": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday",
@@ -904,7 +921,7 @@
                         }
                     ]
                 },
-                "Yodel Ranch": {
+                "YodelRanch": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -916,7 +933,7 @@
                         }
                     ]
                 },
-                "Gotz House": {
+                "GotzHouse": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday",
@@ -952,7 +969,7 @@
                         }
                     ]
                 },
-                "Seaside Lodge": {
+                "SeasideLodge": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -968,7 +985,7 @@
                         }
                     ]
                 },
-                "Won Seed Corner": {
+                "WonSeedCorner": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -984,7 +1001,7 @@
                         }
                     ]
                 },
-                "Harvest Sprites": {
+                "HarvestSprites": {
                     "schedule_blocks": [
                         {
                             "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
