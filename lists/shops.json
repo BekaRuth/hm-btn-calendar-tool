@@ -1,5 +1,5 @@
 {
-    "Saibara Blacksmith": {
+    "SaibaraBlacksmith": {
         "schedule_blocks": [
             {
                 "weekDays": "Monday, Tuesday, Wednesday, Friday, Saturday, Sunday",
@@ -11,7 +11,7 @@
             }
         ]
     },
-    "Aja Winery": {
+    "AjaWinery": {
         "schedule_blocks": [
             {
                 "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Sunday",
@@ -35,7 +35,7 @@
             }
         ]
     },
-    "Chicken Lil": {
+    "ChickenLil": {
         "schedule_blocks": [
             {
                 "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday",
@@ -47,7 +47,7 @@
             }
         ]
     },
-    "Yodel Ranch": {
+    "YodelRanch": {
         "schedule_blocks": [
             {
                 "weekDays": "Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -59,7 +59,7 @@
             }
         ]
     },
-    "Gotz House": {
+    "GotzHouse": {
         "schedule_blocks": [
             {
                 "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday",
@@ -95,7 +95,7 @@
             }
         ]
     },
-    "Seaside Lodge": {
+    "SeasideLodge": {
         "schedule_blocks": [
             {
                 "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -111,7 +111,7 @@
             }
         ]
     },
-    "Won Seed Corner": {
+    "WonSeedCorner": {
         "schedule_blocks": [
             {
                 "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
@@ -127,7 +127,7 @@
             }
         ]
     },
-    "Harvest Sprites": {
+    "HarvestSprites": {
         "schedule_blocks": [
             {
                 "weekDays": "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
